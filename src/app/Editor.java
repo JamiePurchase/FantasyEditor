@@ -9,17 +9,13 @@ import input.InputMouse;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
-import java.util.HashMap;
-import java.util.Map;
 import javax.swing.JPanel;
 import project.Project;
 import project.ProjectService;
 import state.State;
 import state.StateMain;
-import ui.Element;
 import ui.FrameWindow;
 import ui.Toolbar;
 
@@ -113,34 +109,6 @@ public class Editor extends JPanel implements Runnable
         return inputMouse;
     }
     
-    /*public static String getInterfaceElement(Point point)
-    {
-        // Debug
-        System.out.println("Getting Interface Elements");
-        System.out.println("There are currently " + uiElements.size() + " element(s)");
-        for(int e = 0; e < uiElements.size(); e++)
-        {
-            System.out.println(e + ": " + uiElements.get(e).getRef());
-        }
-        
-        System.out.println("Editor.getInterfaceElement(" + point.x + "," + point.y + ")");
-        
-        for(int e = 0; e < uiElements.size(); e++)
-        {
-            Element element = uiElements.get(e);
-            if(element.getVisible() && element.getNexus().contains(point))
-            {
-                return element.getRef();
-            }
-        }
-        return "";
-    }*/
-    
-    /*public static Element getInterfaceElement(String ref)
-    {
-        return uiElements.get(ref);
-    }*/
-    
     public static FrameWindow getInterfaceFrame()
     {
         return uiFrame;
@@ -224,28 +192,6 @@ public class Editor extends JPanel implements Runnable
             getState().mousePressed(event);
         }
     }
-    
-    /*public static void mousePressed(MouseEvent e)
-    {
-        // Close Button
-        if(uiFrame.getCloseButton().getNexus().contains(e.getPoint())) {System.exit(0);}
-        
-        // NOTE: we need to automatically check all visible/active clickable elements
-        // if we clicked on one, we need to return the element reference
-        
-        // State Click
-        if(getState() != null)
-        {
-            System.out.println("Mouse Pressed at " + e.getX() + "," + e.getY());
-            String element = getInterfaceElement(e.getPoint());
-            System.out.println("Element = " + element);
-            if(element != null)
-            {
-                if(e.getButton() == MouseEvent.BUTTON1) {getState().mouseClick(element);}
-                if(e.getButton() == MouseEvent.BUTTON3) {getState().mouseContext(element);}
-            }
-        }
-    }*/
     
     public static void mouseReleased(MouseEvent e)
     {

@@ -1,5 +1,6 @@
 package state;
 
+import app.Editor;
 import input.InputKeyboardKey;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
@@ -14,6 +15,15 @@ public class StateScript extends State
     
     public StateScript()
     {
+        // Frame Title
+        String title = "Script Editor";
+        if(!Editor.getProjectNull()) {title = "Script Editor - " + Editor.getProject().getTitle();}
+        Editor.getInterfaceFrame().setTitle(title);
+        
+        // Modal
+        this.setModal();
+        
+        // Interface
         uiTextArea = new TextboxArea("SCRIPT_TEXTAREA", "hello", 100, 100, 400, 400, 500);
     }
 

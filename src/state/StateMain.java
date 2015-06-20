@@ -7,6 +7,7 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import ui.Action;
+import ui.Element;
 import ui.FrameModal;
 import ui.Toolbar;
 
@@ -31,13 +32,39 @@ public class StateMain extends State
         menu.getMenu(0).addMenu("EDITOR_MENU_PROJECT_EXIT", "EXIT", new Action()
         {
             @Override
-            public void activate()
-            {
-                System.exit(0);
-            }
+            public void activate() {System.exit(0);}
         });
         menu.addMenu("EDITOR_MENU_EDITOR", "EDITOR");
-        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_BOARD", "BOARD");
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_BOARD", "BOARD", new Action()
+        {
+            @Override
+            public void activate() {Editor.setState(new StateBoard());}
+        });
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_CHARACTER", "CHARACTER", new Action()
+        {
+            @Override
+            public void activate() {Editor.setState(new StateCharacter());}
+        });
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_ENEMY", "ENEMY", new Action()
+        {
+            @Override
+            public void activate() {Editor.setState(new StateEnemy());}
+        });
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_QUEST", "QUEST", new Action()
+        {
+            @Override
+            public void activate() {Editor.setState(new StateQuest());}
+        });
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_SCRIPT", "SCRIPT", new Action()
+        {
+            @Override
+            public void activate() {Editor.setState(new StateScript());}
+        });
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_TILESET", "TILESET", new Action()
+        {
+            @Override
+            public void activate() {Editor.setState(new StateTileset());}
+        });
         menu.addMenu("EDITOR_MENU_HELP", "HELP");
         menu.getMenu(2).addMenu("EDITOR_MENU_HELP_ABOUT", "ABOUT", new Action()
         {
@@ -50,27 +77,29 @@ public class StateMain extends State
         });
         Editor.setInterfaceMenu(menu);
         
-        // Mouse Nexus
+        // Create Nexus for each element (cascades down)
         this.mouseNexusAdd("EDITOR_QUIT", Editor.getInterfaceFrame().getCloseButton());
-        this.mouseNexusAdd(menu.getMenu(0));
-        this.mouseNexusAdd(menu.getMenu(0).getMenu(0));
-        this.mouseNexusAdd(menu.getMenu(0).getMenu(1));
-        this.mouseNexusAdd(menu.getMenu(0).getMenu(2));
-        this.mouseNexusAdd(menu.getMenu(0).getMenu(3));
-        this.mouseNexusAdd(menu.getMenu(1));
-        this.mouseNexusAdd(menu.getMenu(1).getMenu(0));
-        this.mouseNexusAdd(menu.getMenu(2));
-        this.mouseNexusAdd(menu.getMenu(2).getMenu(0));
+        menu.addNexusAll(this);
     }
 
     public void keyPressed(InputKeyboardKey key)
     {
-        //
+        //super.keyPressed(key);
     }
 
     public void keyReleased(InputKeyboardKey key)
     {
         //
+    }
+    
+    public void mouseNexusAdd(Element element)
+    {
+        super.mouseNexusAdd(element);
+    }
+    
+    public void mouseNexusAdd(String ref, Element element)
+    {
+        super.mouseNexusAdd(ref, element);
     }
     
     public void mouseNexusClick(String ref)

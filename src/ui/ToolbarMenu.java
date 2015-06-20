@@ -4,6 +4,7 @@ import app.Editor;
 import gfx.Drawing;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import state.State;
 
 public class ToolbarMenu extends Element
 {
@@ -84,6 +85,15 @@ public class ToolbarMenu extends Element
         this.elements.add(menu);
     }
     
+    public void addNexusAll(State state)
+    {
+        for(int e = 0; e < this.elements.size(); e++)
+        {
+            state.mouseNexusAdd(this.elements.get(e));
+            this.elements.get(e).addNexusAll(state);
+        }
+    }
+    
     public void collapse()
     {
         for(int e = 0; e < this.elements.size(); e++)
@@ -157,6 +167,9 @@ public class ToolbarMenu extends Element
     
     public void setAction(Action action)
     {
+        // Debug
+        System.out.println("Setting custom action for " + this.getRef());
+        
         this.actionDefault = false;
         this.actionObject = action;
     }

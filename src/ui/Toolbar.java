@@ -6,6 +6,7 @@ import gfx.Theme;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
+import state.State;
 
 public class Toolbar extends Element
 {
@@ -25,6 +26,15 @@ public class Toolbar extends Element
     public void addMenu(String ref, String text)
     {
         this.elements.add(new ToolbarMenu(ref, this, text, this.getPosX() + (this.elements.size() * 100), this.getPosY()));
+    }
+    
+    public void addNexusAll(State state)
+    {
+        for(int e = 0; e < this.elements.size(); e++)
+        {
+            state.mouseNexusAdd(this.elements.get(e));
+            this.elements.get(e).addNexusAll(state);
+        }
     }
     
     public void collapse()
