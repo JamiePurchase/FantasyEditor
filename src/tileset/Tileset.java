@@ -35,8 +35,8 @@ public class Tileset
     {
         if(col <= this.tileCols && row <= this.tileRows)
         {
-            int tilePosX = (col - 1) * this.tileWide;
-            int tilePosY = (row - 1) * this.tileHigh;
+            int tilePosX = col * this.tileWide;
+            int tilePosY = row * this.tileHigh;
             return this.tileSheet.getSubimage(tilePosX, tilePosY, this.tileWide, this.tileHigh);
         }
         return this.tileSheet.getSubimage(0, 0, this.tileWide, this.tileHigh);
