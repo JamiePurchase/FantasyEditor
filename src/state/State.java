@@ -44,13 +44,19 @@ public abstract class State
         mouseNexus.add(new ElementNexus(ref, element));
     }
     
-    public void mouseNexusCheck(MouseEvent event)
+    public boolean mouseNexusCheck(MouseEvent event)
     {
+        // Debug
+        System.out.println("There are currently " + mouseNexus.size() + " active nexus objects");
+        
         boolean found = false;
         for(int e = 0; e < mouseNexus.size(); e++)
         {
             if(mouseNexus.get(e).contains(event.getPoint()))
             {
+                // Debug
+                System.out.println("Clicked on " + mouseNexus.get(e).getRef() + "!");
+        
                 // Left Click
                 if(event.getButton() == MouseEvent.BUTTON1)
                 {
@@ -59,10 +65,16 @@ public abstract class State
 
                     // Does a modal have focus? Is this element part of the modal?
                     if(Editor.getState().getModalActive() && !mouseNexus.get(e).getElement().getModalElement()) {activate = false;}
-
+                    
+                    // Is this element visible?
+                    if(!mouseNexus.get(e).getElement().getValidAction()) {activate = false;}
+                    
                     // Activate this element
                     if(activate)
                     {
+                        // Debug
+                        System.out.println("Action on element " + mouseNexus.get(e).getElement().getRef());
+                        
                         mouseNexus.get(e).getElement().activate();
                         found = true;
                     }
@@ -76,6 +88,12 @@ public abstract class State
             }
         }
         if(!found) {Editor.getInterfaceMenu().collapse();}
+        return found;
+    }
+    
+    public void mouseNexusClear()
+    {
+        this.mouseNexus = new ArrayList<ElementNexus>();
     }
     
     public abstract void mousePressed(MouseEvent event);

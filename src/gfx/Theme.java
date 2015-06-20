@@ -42,6 +42,7 @@ public class Theme
         typeface.put("TITLEBAR_TEXT", new Font("Andalus", Font.PLAIN, 22));
         typeface.put("TOOLBAR_HEADER_MINI", new Font("Courier New", Font.PLAIN, 22));
         typeface.put("TOOLBAR_MINI", new Font("Courier New", Font.PLAIN, 12));
+        typeface.put("TOOLBAR_TEXT", new Font("Courier New", Font.PLAIN, 16));
     }
     
     public void addColour(String id, Color color)

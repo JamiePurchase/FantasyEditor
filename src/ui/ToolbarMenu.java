@@ -53,6 +53,10 @@ public class ToolbarMenu extends Element
     {
         if(this.getVisible())
         {
+            // Debug
+            System.out.println("Activating " + this.getRef());
+            System.out.println("actionDefault: " + this.actionDefault);
+            
             // Custom Action
             if(!this.actionDefault) {this.actionObject.activate();}
             
@@ -132,6 +136,17 @@ public class ToolbarMenu extends Element
         return this.parentTop;
     }
     
+    @Override
+    public boolean getValidAction()
+    {
+        if(!this.getVisible()) {return false;}
+        if(!this.getParentTop())
+        {
+            if(!this.getParentMenu().getExpand()) {return false;}
+        }
+        return true;
+    }
+    
     public void render(Graphics gfx)
     {
         // Highlight
@@ -161,6 +176,7 @@ public class ToolbarMenu extends Element
         }
         
         // Border
+        gfx.setFont(Editor.getThemeFont("TOOLBAR_TEXT"));
         gfx.setColor(Editor.getThemeColour("TOOLBAR_BORDER"));
         gfx.drawRect(this.getPosX(), this.getPosY() + 30, 100, this.elements.size() * 30);
     }

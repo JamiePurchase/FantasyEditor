@@ -10,6 +10,10 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import ui.Action;
+import ui.ActionBoard;
+import ui.Element;
+import ui.FrameModal;
 import ui.Panel;
 import ui.Toolbar;
 
@@ -42,9 +46,12 @@ public class StateBoard extends State
         
         // Interface
         this.setTitle("Board Editor", this.getFileTitle());
-        this.loadInterface();
+        Editor.setInterfaceMenu(this.loadInterface());
         this.uiTools = new Panel("EDITOR_BOARD_TOOLS", 5, 60, 1356, 50);
         this.uiPanel = new Panel("EDITOR_BOARD_PANEL", 1204, 110, 157, 623);
+        
+        // Modal
+        this.setModal();
         
         // Board
         this.boardObject = new Board("test", 100, 100);
@@ -62,9 +69,10 @@ public class StateBoard extends State
         
         // Create Nexus for each element (cascades down)
         this.mouseNexusAdd("EDITOR_QUIT", Editor.getInterfaceFrame().getCloseButton());
+        Editor.getInterfaceMenu().addNexusAll(this);
         
-        //menu.addNexusAll(this);
-        // NOTE: we need to create a nexus for every button/option/tool
+        // Status Bar
+        Editor.getInputMouse().setReport(this);
     }
     
     private void boardClick(MouseEvent event)
@@ -84,6 +92,26 @@ public class StateBoard extends State
                 this.setFileUnsaved();
             }
         }
+    }
+    
+    private void fileSave()
+    {
+        // Update current file
+        if(this.fileActive)
+        {
+            Editor.setInterfaceStatus("Saving board...");
+            this.boardObject.save(this.fileRef);
+            this.fileUnsaved = false;
+        }
+        
+        // Create new file
+        else
+        {
+            // NOTE: propmt for a file name then save the board
+            // be sure to set the fileActive, fileRef and fileUnsaved variables afterwards
+        }
+        
+        // NOTE: it would be good to change the status bar message to 'saving...'
     }
     
     private String getFileTitle()
@@ -108,21 +136,60 @@ public class StateBoard extends State
         //
     }
     
-    private void loadInterface()
+    private Toolbar loadInterface()
     {
+        // Debug
+        System.out.println("Loading interface for " + this.getClass().toString() + " state");
+        this.mouseNexusClear();
         Toolbar menu = new Toolbar("EDITOR_MENU", 5, 30, Editor.getAppWidth() - 10);
         menu.addMenu("EDITOR_MENU_FILE", "FILE");
         menu.getMenu(0).addMenu("EDITOR_MENU_FILE_NEW", "NEW");
         menu.getMenu(0).addMenu("EDITOR_MENU_FILE_OPEN", "OPEN");
-        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_SAVE", "SAVE");
+        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_SAVE", "SAVE", new ActionBoard(this)
+        {
+            @Override
+            public void activate()
+            {
+                // Debug
+                System.out.println("Board Action Save");
+                
+                Editor.getInterfaceMenu().collapse();
+                this.getBoard().fileSave();
+            }
+        });
+        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_SAVEAS", "SAVE AS");
         menu.getMenu(0).addMenu("EDITOR_MENU_FILE_CLOSE", "CLOSE");
         menu.getMenu(0).addMenu("EDITOR_MENU_FILE_DONE", "DONE");
         menu.addMenu("EDITOR_MENU_BOARD", "BOARD");
-        menu.getMenu(0).addMenu("EDITOR_MENU_BOARD_SETTINGS", "SETTINGS");
-        Editor.setInterfaceMenu(menu);
-        
-        // Status Bar
-        Editor.getInputMouse().setReport(this);
+        menu.getMenu(1).addMenu("EDITOR_MENU_BOARD_SETTINGS", "SETTINGS", new Action()
+        {
+            @Override
+            public void activate()
+            {
+                // Create the about modal
+                FrameModal modal = new FrameModal("MODAL_BOARD_SETTINGS", "Board Settings", 800, 400);
+                modal.addLabel("", "jFantasy Editor", 80, 70, 100, "CENTER");
+                
+                // Close menu and display modal
+                Editor.getInterfaceMenu().collapse();
+                Editor.getState().setModal(modal);
+            }
+        });
+        menu.getMenu(1).addMenu("EDITOR_MENU_BOARD_SETTINGS", "DIMENSIONS");
+        // NOTE: we need the ability to insert x new rows / columns either side of the existing tiles
+        // if we're adding before the current 0,0 then we need to push all existing terrain, zones
+        // and entities ahead
+        return menu;
+    }
+    
+    public void mouseNexusAdd(Element element)
+    {
+        super.mouseNexusAdd(element);
+    }
+    
+    public void mouseNexusAdd(String ref, Element element)
+    {
+        super.mouseNexusAdd(ref, element);
     }
     
     public void mouseMoved(MouseEvent event)
@@ -139,12 +206,12 @@ public class StateBoard extends State
     }
 
     public void mousePressed(MouseEvent event)
-    {
-        // Board Click
-        if(this.boardArea.contains(event.getPoint())) {this.boardClick(event);}
-        
+    {        
         // Check Nexus
-        else {this.mouseNexusCheck(event);}
+        boolean done = this.mouseNexusCheck(event);
+        
+        // Board Click
+        if(!done && this.boardArea.contains(event.getPoint())) {this.boardClick(event);}
     }
 
     public void mouseReleased(MouseEvent event)
@@ -175,6 +242,10 @@ public class StateBoard extends State
         
         // Board Terrain
         boardObject.render(gfx);
+        
+        // Board Border
+        gfx.setColor(Editor.getThemeColour("TOOLBAR_BORDER"));
+        gfx.drawRect(this.boardArea.x, this.boardArea.y, this.boardArea.width, this.boardArea.height);
         
         // Scrollbar Background
         gfx.setColor(Editor.getThemeColour("SCROLLBAR_BACKGROUND"));

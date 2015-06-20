@@ -73,6 +73,12 @@ public abstract class Element
         return this.sizeY;
     }
     
+    public boolean getValidAction()
+    {
+        if(!this.getVisible()) {return false;}
+        return true;
+    }
+    
     public boolean getVisible()
     {
         return this.visible;

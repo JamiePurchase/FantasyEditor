@@ -1,6 +1,7 @@
 package board;
 
 import app.Editor;
+import file.FileWrite;
 import gfx.Drawing;
 import java.awt.Graphics;
 import java.util.ArrayList;
@@ -51,6 +52,11 @@ public class Board
         return screenY - this.renderPosY + this.scrollY;
     }
     
+    public String getRef()
+    {
+        return this.ref;
+    }
+    
     /**
      * Gets the location on the screen that a part of the board needs to be drawn at
      * 
@@ -73,6 +79,19 @@ public class Board
         return this.renderPosY + boardY - this.scrollY;
     }
     
+    private String[] getSaveData()
+    {
+        // Build an array list
+        ArrayList<String> data = new ArrayList<String>();
+        data.add("! BOARD FILE - " + this.getRef() + " !");
+        data.add("");
+        
+        // Convert to array
+        String[] result = new String[data.size()];
+        result = data.toArray(result);
+        return result;
+    }
+        
     /**
      * Gets the terrain code of a particular tile
      * 
@@ -131,6 +150,12 @@ public class Board
                 gfx.drawImage(Editor.structTilesetGetTile(this.terrain[tileX][tileY]), this.renderPosX + (32 * x), this.renderPosY + (32 * y), null);
             }
         }
+    }
+    
+    public void save(String ref)
+    {
+        FileWrite fw = new FileWrite("workspace/Test/boards/" + this.getRef() + ".jf1brd", false);
+        fw.FileWriteArray(this.getSaveData());
     }
     
     public void setRender(int posX, int posY, int sizeX, int sizeY)

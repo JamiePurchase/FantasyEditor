@@ -12,6 +12,7 @@ public class Button extends Element
     private String text;
     private boolean textBold;
     private Color colorBkgStandard, colorBkgActive;
+    private Action action;
     
     public Button(String ref, String text, boolean bold, int posX, int posY, int sizeX, int sizeY)
     {
@@ -25,6 +26,27 @@ public class Button extends Element
         this.setVisible(true);
         this.setColorBkgActive(Editor.getThemeColour("BUTTON_BACKGROUND_STANDARD_ACTIVE"));
         this.setColorBkgStandard(Editor.getThemeColour("BUTTON_BACKGROUND_STANDARD"));
+        this.action = null;
+    }
+    
+    public Button(String ref, String text, boolean bold, int posX, int posY, int sizeX, int sizeY, Action action)
+    {
+        this.setRef(ref);
+        this.setText(text);
+        this.setTextBold(false);
+        this.setPosX(posX);
+        this.setPosY(posY);
+        this.setSizeX(sizeX);
+        this.setSizeY(sizeY);
+        this.setVisible(true);
+        this.setColorBkgActive(Editor.getThemeColour("BUTTON_BACKGROUND_STANDARD_ACTIVE"));
+        this.setColorBkgStandard(Editor.getThemeColour("BUTTON_BACKGROUND_STANDARD"));
+        this.action = action;
+    }
+    
+    public void activate()
+    {
+        this.action.activate();
     }
     
     public Color getColorBkgActive()

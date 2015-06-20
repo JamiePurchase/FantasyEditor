@@ -191,10 +191,7 @@ public class Editor extends JPanel implements Runnable
     
     public static void mousePressed(MouseEvent event)
     {
-        if(getState() != null)
-        {
-            getState().mousePressed(event);
-        }
+        if(getState() != null) {getState().mousePressed(event);}
     }
     
     public static void mouseReleased(MouseEvent e)
@@ -224,11 +221,13 @@ public class Editor extends JPanel implements Runnable
         
         // Interface
         uiFrame.render(gfx);
-        uiMenu.render(gfx);
         uiStatus.render(gfx);
         
         // State Contents
         if(this.getState() != null) {this.getState().render(gfx);}
+        
+        // Interface (foreground)
+        uiMenu.render(gfx);
     }
     
     public void run()

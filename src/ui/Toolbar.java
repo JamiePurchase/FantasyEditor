@@ -38,6 +38,9 @@ public class Toolbar extends Element
     {
         for(int e = 0; e < this.elements.size(); e++)
         {
+            // Debug
+            System.out.println("Adding a nexus for " + this.elements.get(e).getRef());
+            
             state.mouseNexusAdd(this.elements.get(e));
             this.elements.get(e).addNexusAll(state);
         }

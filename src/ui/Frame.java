@@ -4,12 +4,17 @@ import app.Editor;
 import gfx.Drawing;
 import gfx.Theme;
 import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 
 public class Frame extends Element
 {
     private String title;
     private Button closeButton;
     private boolean closeEnable;
+    
+    // Icon
+    private BufferedImage iconImage;
+    private boolean iconEnable;
     
     public Frame(String ref, String title, int posX, int posY, int sizeX, int sizeY, boolean close)
     {
@@ -19,8 +24,14 @@ public class Frame extends Element
         this.setPosY(posY);
         this.setSizeX(sizeX);
         this.setSizeY(sizeY);
-        this.closeButton = new ButtonClose(this.getCloseRef(), this.getSizeX() - 26, 5);
+        this.closeButton = new ButtonClose(this.getCloseRef(), this.getSizeX() - 26, 5, new Action()
+        {
+            @Override
+            public void activate() {System.exit(0);}
+        });
         this.closeEnable = close;
+        this.iconImage = null;
+        this.iconEnable = false;
     }
     
     public Button getCloseButton()
@@ -43,6 +54,12 @@ public class Frame extends Element
         return this.title;
     }
     
+    public int getTitlePosX()
+    {
+        if(this.iconEnable) {return this.getPosX() + 50;}
+        return this.getPosX() + 15;
+    }
+    
     public void render(Graphics gfx)
     {
         // Background
@@ -57,13 +74,13 @@ public class Frame extends Element
         gfx.drawRect(this.getPosX(), this.getPosY(), this.getSizeX(), this.getSizeY());
         gfx.drawRect(this.getPosX() + 5, this.getPosY() + 30, this.getSizeX() - 10, this.getSizeY() - 35);
         
-        // Temp
-        gfx.drawImage(Drawing.getImage("icons/icon2.png"), this.getPosX() + 10, this.getPosY(), null);
+        // Titlebar Icon
+        if(this.iconEnable) {gfx.drawImage(this.iconImage, this.getPosX() + 10, this.getPosY(), null);}
         
         // Titlebar Text
         gfx.setColor(Editor.getThemeColour("TITLEBAR_TEXT"));
         gfx.setFont(Editor.getThemeFont("TITLEBAR_TEXT"));
-        Drawing.write(gfx, this.getTitle(), this.getPosX() + 50, this.getPosY() + 24);
+        Drawing.write(gfx, this.getTitle(), this.getTitlePosX(), this.getPosY() + 24);
         
         // Close Button
         if(this.getCloseEnabled()) {this.getCloseButton().render(gfx);}
@@ -77,6 +94,18 @@ public class Frame extends Element
     public void setTitle(String title)
     {
         this.title = title;
+    }
+    
+    public void setTitleIcon()
+    {
+        this.iconImage = null;
+        this.iconEnable = false;
+    }
+    
+    public void setTitleIcon(BufferedImage icon)
+    {
+        this.iconImage = icon;
+        this.iconEnable = true;
     }
     
 }

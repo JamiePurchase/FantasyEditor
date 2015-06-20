@@ -26,5 +26,8 @@ public class FrameModal extends Frame
         super.render(gfx);
         
         this.tempLabel.render(gfx);
+        // NOTE: to keep all of the modals uniform and to provide better access to good layouts,
+        // it would be wise to have a table-like grid (several rows going down) that can hold elements
+        // eg: label on line one and two, gap on line three, text box on line four, etc...
     }
 }
