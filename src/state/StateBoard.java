@@ -1,6 +1,7 @@
 package state;
 
 import app.Editor;
+import gfx.Drawing;
 import input.InputKeyboardKey;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -9,13 +10,39 @@ import ui.Toolbar;
 
 public class StateBoard extends State
 {
+    // File
+    private boolean fileActive;
+    private String fileRef;
     
     public StateBoard()
     {
-        // Frame Title
-        Editor.getInterfaceFrame().setTitle("Fantasy Editor - " + Editor.getProject().getTitle() + " - Board Editor");
+        // File
+        this.fileActive = false;
+        this.fileRef = "";
         
-        // Menu Toolbar
+        // Interface
+        this.setTitle("Board Editor", this.getFileTitle());
+        this.loadInterface();
+    }
+    
+    private String getFileTitle()
+    {
+        if(this.fileActive = true) {return this.fileRef;}
+        return "";
+    }
+
+    public void keyPressed(InputKeyboardKey key)
+    {
+        //
+    }
+
+    public void keyReleased(InputKeyboardKey key)
+    {
+        //
+    }
+    
+    private void loadInterface()
+    {
         Toolbar menu = new Toolbar("EDITOR_MENU", 5, 30, Editor.getAppWidth() - 10);
         menu.addMenu("EDITOR_MENU_FILE", "FILE");
         menu.getMenu(0).addMenu("EDITOR_MENU_FILE_NEW", "NEW");
@@ -28,16 +55,6 @@ public class StateBoard extends State
         Editor.setInterfaceMenu(menu);
     }
 
-    public void keyPressed(InputKeyboardKey key)
-    {
-        //
-    }
-
-    public void keyReleased(InputKeyboardKey key)
-    {
-        //
-    }
-
     public void mousePressed(MouseEvent event)
     {
         //
@@ -48,11 +65,13 @@ public class StateBoard extends State
         //
     }
 
-    @Override
     public void render(Graphics gfx)
     {
-        gfx.setColor(Editor.getThemeColour("APP_BACKGROUND"));
-        gfx.fillRect(0, 0, Editor.getAppWidth(), Editor.getAppHeight());
+        if(this.getModalActive())
+        {
+            Drawing.fadeScreen(gfx, 0.5f);
+            this.getModalFrame().render(gfx);
+        }
     }
 
     public void tick()

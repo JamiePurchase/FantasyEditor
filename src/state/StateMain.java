@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import ui.Action;
 import ui.Element;
 import ui.FrameModal;
+import ui.Label;
 import ui.Toolbar;
 
 public class StateMain extends State
@@ -16,9 +17,7 @@ public class StateMain extends State
     public StateMain()
     {
         // Frame Title
-        String title = "Fantasy Editor";
-        if(!Editor.getProjectNull()) {title = "Fantasy Editor - " + Editor.getProject().getTitle();}
-        Editor.getInterfaceFrame().setTitle(title);
+        this.setTitle();
         
         // Modal
         this.setModal();
@@ -71,8 +70,13 @@ public class StateMain extends State
             @Override
             public void activate()
             {
+                // Create the about modal
+                FrameModal modal = new FrameModal("MODAL_PROJECT_NEW", "About", 800, 400);
+                modal.addLabel("", "jFantasy Editor", 80, 70, 100, "CENTER");
+                
+                // Close menu and display modal
                 Editor.getInterfaceMenu().collapse();
-                Editor.getState().setModal(new FrameModal("MODAL_PROJECT_NEW", "New Project", 800, 400));
+                Editor.getState().setModal(modal);
             }
         });
         Editor.setInterfaceMenu(menu);

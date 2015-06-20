@@ -57,10 +57,13 @@ public class Frame extends Element
         gfx.drawRect(this.getPosX(), this.getPosY(), this.getSizeX(), this.getSizeY());
         gfx.drawRect(this.getPosX() + 5, this.getPosY() + 30, this.getSizeX() - 10, this.getSizeY() - 35);
         
+        // Temp
+        gfx.drawImage(Drawing.getImage("icons/icon2.png"), this.getPosX() + 10, this.getPosY(), null);
+        
         // Titlebar Text
         gfx.setColor(Editor.getThemeColour("TITLEBAR_TEXT"));
         gfx.setFont(Editor.getThemeFont("TITLEBAR_TEXT"));
-        Drawing.write(gfx, this.getTitle(), this.getPosX() + 20, this.getPosY() + 24);
+        Drawing.write(gfx, this.getTitle(), this.getPosX() + 50, this.getPosY() + 24);
         
         // Close Button
         if(this.getCloseEnabled()) {this.getCloseButton().render(gfx);}

@@ -84,5 +84,18 @@ public abstract class State
         this.modalFrame = modal;
     }
     
+    public void setTitle()
+    {
+        this.setTitle("", "");
+    }
+    
+    public void setTitle(String editor, String file)
+    {
+        String title = "jFantasy [" + Editor.getProject().getTitle() + "]";
+        if(editor.length() > 0) {title = title + "  ~  " + editor;}
+        if(file.length() > 0) {title = title + " " + file;}
+        Editor.getInterfaceFrame().setTitle(title);
+    }
+    
     public abstract void tick();
 }
