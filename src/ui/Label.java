@@ -29,4 +29,9 @@ public class Label extends Element
         Drawing.write(gfx, this.text, this.getPosX(), this.getPosY(), this.align);
     }
     
+    public void setText(String text)
+    {
+        this.text = text;
+    }
+    
 }

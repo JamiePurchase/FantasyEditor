@@ -1,9 +1,6 @@
 package ui;
 
 import app.Editor;
-import gfx.Drawing;
-import gfx.Theme;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 import state.State;
@@ -11,6 +8,7 @@ import state.State;
 public class Toolbar extends Element
 {
     private ArrayList<ToolbarMenu> elements;
+    private ArrayList<Label> labels;
     
     public Toolbar(String ref, int posX, int posY, int sizeX)
     {
@@ -21,6 +19,14 @@ public class Toolbar extends Element
         this.setSizeY(30);
         this.setVisible(true);
         this.elements = new ArrayList<ToolbarMenu>();
+        
+        // NOTE: we should use a parent class to encorporate menu options and labels in the element array
+        this.labels = new ArrayList<Label>();
+    }
+    
+    public void addLabel(String ref, String text, int posX, int posY, int sizeX, String align)
+    {
+        this.labels.add(new Label(ref, text, this.getPosX() + posX, this.getPosY() + posY, sizeX, align));
     }
     
     public void addMenu(String ref, String text)
@@ -45,6 +51,11 @@ public class Toolbar extends Element
         }
     }
     
+    public Label getLabel(int pos)
+    {
+        return this.labels.get(pos);
+    }
+    
     public ToolbarMenu getMenu(int pos)
     {
         return this.elements.get(pos);
@@ -58,12 +69,18 @@ public class Toolbar extends Element
         
         // Border
         gfx.setColor(Editor.getThemeColour("TOOLBAR_BORDER"));
-        gfx.drawRect(5, 30, 1356, 30);
+        gfx.drawRect(this.getPosX(), this.getPosY(), this.getSizeX(), this.getSizeY());
         
         // Elements
         for(int e = 0; e < this.elements.size(); e++)
         {
             this.elements.get(e).render(gfx);
+        }
+        
+        // Labels
+        for(int l = 0; l < this.labels.size(); l++)
+        {
+            this.labels.get(l).render(gfx);
         }
     }
     

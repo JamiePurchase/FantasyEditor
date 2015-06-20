@@ -84,6 +84,9 @@ public class StateMain extends State
         // Create Nexus for each element (cascades down)
         this.mouseNexusAdd("EDITOR_QUIT", Editor.getInterfaceFrame().getCloseButton());
         menu.addNexusAll(this);
+        
+        // Set status message
+        Editor.setInterfaceStatusMessage("Loading most recent project...");
     }
 
     public void keyPressed(InputKeyboardKey key)

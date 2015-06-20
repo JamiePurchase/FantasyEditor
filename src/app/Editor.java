@@ -1,7 +1,5 @@
 package app;
 
-import app.Window;
-import gfx.Drawing;
 import gfx.Theme;
 import input.InputKeyboard;
 import input.InputKeyboardKey;
@@ -11,6 +9,10 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import javax.swing.JPanel;
 import project.Project;
 import project.ProjectService;
@@ -33,7 +35,6 @@ public class Editor extends JPanel implements Runnable
     // Interface
     private static FrameWindow uiFrame;
     private static Toolbar uiMenu, uiStatus;
-    //private static Map<String, Element> uiElements;
     
     // Input
     private static InputKeyboard inputKeyboard;
@@ -54,8 +55,7 @@ public class Editor extends JPanel implements Runnable
         // Interface
         this.uiFrame = new FrameWindow("EDITOR_FRAME", this.appTitle, true);
         this.uiMenu = null;
-        //this.uiStatus = new Toolbar("EDITOR_STATUS", 0, this.getStateSizeY(), this.appSizeX, 11);
-        //clearInterfaceElements();
+        this.createStatus();
 
         // Input
         inputKeyboard = new InputKeyboard();
@@ -69,19 +69,12 @@ public class Editor extends JPanel implements Runnable
         setProject("Test");
     }
     
-    /*public static void addInterfaceElement(Element element)
+    private void createStatus()
     {
-        System.out.println("Adding Interface Element: " + element.getRef());
-        uiElements.put(element.getRef(), element);
-        System.out.println("There are now " + uiElements.size() + " element(s)");
+        this.uiStatus = new Toolbar("EDITOR_STATUS", 5, 733, Editor.getAppWidth() - 10);
+        this.uiStatus.addLabel("EDITOR_STATUS_MESSSAGE", "", 10, 20, 1200, "LEFT");
+        this.uiStatus.addLabel("EDITOR_STATUS_CLOCK", "", 1346, 20, 1200, "RIGHT");
     }
-    
-    public static void clearInterfaceElements()
-    {
-        System.out.println("Clearing Interface Elements");
-        uiElements = new HashMap<String, Element>();
-        addInterfaceElement(uiFrame.getCloseButton());
-    }*/
     
     private void createWindow()
     {
@@ -218,15 +211,10 @@ public class Editor extends JPanel implements Runnable
         gfx.setColor(Theme.getColour("APP_BACKGROUND"));
         gfx.fillRect(0, 0, this.appSizeX, this.appSizeY);
         
-        // Frame
+        // Interface
         uiFrame.render(gfx);
-        
-        // Menu Toolbar
         uiMenu.render(gfx);
-        
-        // State Border
-        /*gfx.setColor(Theme.getColour("BAR_BORDER"));
-        gfx.drawRect(this.getStatePosX(), this.getStatePosY(), this.getStateSizeX(), this.getStateSizeY());*/
+        uiStatus.render(gfx);
         
         // State Contents
         if(this.getState() != null) {this.getState().render(gfx);}
@@ -276,6 +264,11 @@ public class Editor extends JPanel implements Runnable
         uiMenu = menu;
     }
     
+    public static void setInterfaceStatusMessage(String message)
+    {
+        uiStatus.getLabel(0).setText(message);
+    }
+    
     public static void setProject(String ref)
     {
         project = ProjectService.getProject(ref);
@@ -310,7 +303,16 @@ public class Editor extends JPanel implements Runnable
 
     private void tick()
     {
+        // Status Clock
+        this.tickStatusClock();
+        
+        // State Tick
         this.getState().tick();
+    }
+    
+    private void tickStatusClock()
+    {
+        uiStatus.getLabel(1).setText(new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(new Date()));
     }
     
 }
