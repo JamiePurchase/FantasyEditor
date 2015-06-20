@@ -1,6 +1,7 @@
 package state;
 
 import app.Editor;
+import board.Board;
 import gfx.Drawing;
 import input.InputKeyboardKey;
 import java.awt.Color;
@@ -16,8 +17,13 @@ public class StateBoard extends State
     private String fileRef;
     private boolean fileUnsaved;
     
-    // Interface
+    // Board
+    private Board boardObject;
     private Rectangle boardArea;
+    
+    // Tools
+    private String toolActive;
+    private String toolPaint;
     
     public StateBoard()
     {
@@ -29,7 +35,15 @@ public class StateBoard extends State
         // Interface
         this.setTitle("Board Editor", this.getFileTitle());
         this.loadInterface();
+        
+        // Board
+        this.boardObject = new Board("test", 100, 100);
+        this.boardObject.setTerrainAll("test|0|0");
         this.boardArea = new Rectangle(66, 110, 1280, 608);
+        
+        // Tools
+        this.toolActive = "PAINT_SINGLE";
+        this.toolPaint = "test|0|0";
         
         // Create Nexus for each element (cascades down)
         this.mouseNexusAdd("EDITOR_QUIT", Editor.getInterfaceFrame().getCloseButton());
@@ -46,7 +60,13 @@ public class StateBoard extends State
         // NOTE: the status bar should show the correct coordinates in both pixels and tiles for the
         // board, taking into consideration scrolling (also preview terrain tileset data?)
         
-        //if(event.getButton() == MouseEvent.BUTTON1) {}
+        if(event.getButton() == MouseEvent.BUTTON1)
+        {
+            if(this.toolActive == "PAINT_SINGLE")
+            {
+                // NOTE: set the terrain of (tileX,tileY) to the current toolPaint image
+            }
+        }
     }
     
     private int boardClickGetPosX(int posX)
@@ -164,7 +184,9 @@ public class StateBoard extends State
         gfx.fillRect(66, 110, 1280, 608);
         
         // Temp
-        gfx.drawImage(Drawing.getImage("terrain/test.png"), 66, 110, null);
+        //gfx.drawImage(Drawing.getImage("terrain/test.png"), 66, 110, null);
+        boardObject.setRender(66, 110, 10, 10);
+        boardObject.render(gfx);
         
         // Scrollbar Background
         gfx.setColor(Editor.getThemeColour("SCROLLBAR_BACKGROUND"));

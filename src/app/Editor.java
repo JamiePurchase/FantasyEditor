@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.JPanel;
@@ -16,6 +17,8 @@ import project.Project;
 import project.ProjectService;
 import state.State;
 import state.StateMain;
+import tileset.TilesetService;
+import tileset.TilesetStructure;
 import ui.FrameWindow;
 import ui.Toolbar;
 
@@ -41,6 +44,9 @@ public class Editor extends JPanel implements Runnable
     // Project
     private static Project project;
     private static boolean projectNull;
+    
+    // Structures
+    private static TilesetStructure structTilesets;
 
     public Editor()
     {
@@ -65,6 +71,10 @@ public class Editor extends JPanel implements Runnable
         
         // Temp
         setProject("Test");
+        
+        // Structures
+        structTilesets = new TilesetStructure();
+        structTilesets.addTileset("test", TilesetService.getTileset("test"));
     }
     
     private void createStatus()
@@ -308,6 +318,12 @@ public class Editor extends JPanel implements Runnable
             try {this.appThread.join();}
             catch (InterruptedException e) {System.out.println(e);}
         }
+    }
+    
+    public static BufferedImage structTilesetGetTile(String terrain)
+    {
+        String[] data = terrain.split("\\|");
+        return structTilesets.getTileset(data[0]).getTileAt(Integer.parseInt(data[1]), Integer.parseInt(data[2]));
     }
 
     private void tick()
