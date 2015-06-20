@@ -3,12 +3,20 @@ package board;
 import app.Editor;
 import gfx.Drawing;
 import java.awt.Graphics;
+import java.util.ArrayList;
 
 public class Board
 {
     private String ref;
     private int sizeX, sizeY;
+    
+    // Terrain
     private String terrain[][];
+    
+    // Zones
+    private ArrayList<Zone> zones;
+    
+    // Render Options
     private int scrollX, scrollY;
     private int renderPosX, renderPosY, renderSizeX, renderSizeY;
     
@@ -17,7 +25,12 @@ public class Board
         this.ref = ref;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        
+        // Terrain
         this.terrain = new String[sizeX][sizeY];
+        
+        // Zones
+        this.zones = new ArrayList<Zone>();
         
         // Render Options
         this.scrollX = 0;
@@ -28,9 +41,83 @@ public class Board
         this.renderSizeY = 0;
     }
     
+    public int getBoardPosX(int screenX)
+    {
+        return screenX - this.renderPosX + this.scrollX;
+    }
+    
+    public int getBoardPosY(int screenY)
+    {
+        return screenY - this.renderPosY + this.scrollY;
+    }
+    
+    /**
+     * Gets the location on the screen that a part of the board needs to be drawn at
+     * 
+     * @param boardX a location on the board (in pixels)
+     * @return the relevant location on the screen (in pixels)
+     */
+    public int getRenderPosX(int boardX)
+    {
+        return this.renderPosX + boardX - this.scrollX;
+    }
+    
+    /**
+     * Gets the location on the screen that a part of the board needs to be drawn at
+     * 
+     * @param boardY a location on the board (in pixels)
+     * @return the relevant location on the screen (in pixels)
+     */
+    public int getRenderPosY(int boardY)
+    {
+        return this.renderPosY + boardY - this.scrollY;
+    }
+    
+    /**
+     * Gets the terrain code of a particular tile
+     * 
+     * @param posX
+     * @param posY
+     * @return the terrain code string (sheet|x|y)
+     */
     public String getTerrain(int posX, int posY)
     {
         return this.terrain[posX][posY];
+    }
+    
+    /**
+     * Works out what tile a coordinate is on (x)
+     * 
+     * @param posX a location (in pixels) on the board
+     * @return the tileX location of that point
+     */
+    public int getTileX(int posX)
+    {
+        // NOTE: this currently doesn't think about board scroll
+        int result = 0;
+        while(posX > 32)
+        {
+            result += 1;
+            posX -= 32;
+        }
+        return result;
+    }
+    
+    /**
+     * Works out what tile a coordinate is on (y)
+     * 
+     * @param posY a location (in pixels) on the board
+     * @return the tileY location of that point
+     */
+    public int getTileY(int posY)
+    {
+        int result = 0;
+        while(posY > 32)
+        {
+            result += 1;
+            posY -= 32;
+        }
+        return result;
     }
     
     public void render(Graphics gfx)
@@ -41,7 +128,7 @@ public class Board
             {
                 int tileX = x + scrollX;
                 int tileY = y + scrollY;
-                gfx.drawImage(Editor.structTilesetGetTile(this.terrain[tileX][tileY]), this.renderPosX * x, this.renderPosY * y, null);
+                gfx.drawImage(Editor.structTilesetGetTile(this.terrain[tileX][tileY]), this.renderPosX + (32 * x), this.renderPosY + (32 * y), null);
             }
         }
     }

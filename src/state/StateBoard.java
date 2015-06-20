@@ -3,11 +3,14 @@ package state;
 import app.Editor;
 import board.Board;
 import gfx.Drawing;
+import gfx.Theme;
 import input.InputKeyboardKey;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import ui.Panel;
 import ui.Toolbar;
 
 public class StateBoard extends State
@@ -17,13 +20,18 @@ public class StateBoard extends State
     private String fileRef;
     private boolean fileUnsaved;
     
+    // Interface
+    private Panel uiTools, uiPanel;
+    
     // Board
     private Board boardObject;
     private Rectangle boardArea;
     
     // Tools
-    private String toolActive;
-    private String toolPaint;
+    private String toolActive, toolGroup, toolPaint;
+    
+    // Options
+    private boolean optionGridlines;
     
     public StateBoard()
     {
@@ -35,15 +43,22 @@ public class StateBoard extends State
         // Interface
         this.setTitle("Board Editor", this.getFileTitle());
         this.loadInterface();
+        this.uiTools = new Panel("EDITOR_BOARD_TOOLS", 5, 60, 1356, 50);
+        this.uiPanel = new Panel("EDITOR_BOARD_PANEL", 1204, 110, 157, 623);
         
         // Board
         this.boardObject = new Board("test", 100, 100);
         this.boardObject.setTerrainAll("test|0|0");
-        this.boardArea = new Rectangle(66, 110, 1280, 608);
+        this.boardObject.setRender(5, 110, 10, 10);
+        this.boardArea = new Rectangle(5, 110, 1184, 608);
         
         // Tools
         this.toolActive = "PAINT_SINGLE";
-        this.toolPaint = "test|0|0";
+        this.toolGroup = "TERRAIN";
+        this.toolPaint = "test|3|1";
+        
+        // Options
+        this.optionGridlines = false;
         
         // Create Nexus for each element (cascades down)
         this.mouseNexusAdd("EDITOR_QUIT", Editor.getInterfaceFrame().getCloseButton());
@@ -54,8 +69,8 @@ public class StateBoard extends State
     
     private void boardClick(MouseEvent event)
     {
-        int tileX = boardClickGetTileX(boardClickGetPosX(event.getX()));
-        int tileY = boardClickGetTileY(boardClickGetPosY(event.getY()));
+        int tileX = this.boardObject.getTileX(this.boardObject.getBoardPosX(event.getX()));
+        int tileY = this.boardObject.getTileY(this.boardObject.getBoardPosY(event.getY()));
             
         // NOTE: the status bar should show the correct coordinates in both pixels and tiles for the
         // board, taking into consideration scrolling (also preview terrain tileset data?)
@@ -65,46 +80,21 @@ public class StateBoard extends State
             if(this.toolActive == "PAINT_SINGLE")
             {
                 // NOTE: set the terrain of (tileX,tileY) to the current toolPaint image
+                this.boardObject.setTerrain(this.toolPaint, tileX, tileY);
+                this.setFileUnsaved();
             }
         }
-    }
-    
-    private int boardClickGetPosX(int posX)
-    {
-        return posX - 66;
-    }
-    
-    private int boardClickGetPosY(int posY)
-    {
-        return posY - 110;
-    }
-    
-    private int boardClickGetTileX(int posX)
-    {
-        // NOTE: this currently doesn't think about board scroll
-        int result = 0;
-        while(posX > 32)
-        {
-            result += 1;
-            posX -= 32;
-        }
-        return result;
-    }
-    
-    private int boardClickGetTileY(int posY)
-    {
-        int result = 0;
-        while(posY > 32)
-        {
-            result += 1;
-            posY -= 32;
-        }
-        return result;
     }
     
     private String getFileTitle()
     {
         if(this.fileActive = true) {return this.fileRef;}
+        return "";
+    }
+    
+    private String getToolName()
+    {
+        if(this.toolActive == "PAINT_SINGLE") {return "Terrain Brush";}
         return "";
     }
 
@@ -139,13 +129,13 @@ public class StateBoard extends State
     {
         if(this.boardArea.contains(event.getPoint()))
         {
-            int posX = boardClickGetPosX(event.getX());
-            int posY = boardClickGetPosY(event.getY());
-            int tileX = boardClickGetTileX(posX);
-            int tileY = boardClickGetTileX(posY);
-            Editor.setInterfaceStatus("", posX + "," + posY, tileX + "," + tileY, "");
+            int posX = this.boardObject.getBoardPosX(event.getX());
+            int posY = this.boardObject.getBoardPosY(event.getY());
+            int tileX = this.boardObject.getTileX(posX);
+            int tileY = this.boardObject.getTileY(posY);
+            Editor.setInterfaceStatus(this.getToolName(), posX + "," + posY, tileX + "," + tileY, "");
         }
-        else {Editor.setInterfaceStatus("", "", "", "");}
+        else {Editor.setInterfaceStatus(this.getToolName(), "", "", "");}
     }
 
     public void mousePressed(MouseEvent event)
@@ -181,46 +171,75 @@ public class StateBoard extends State
     {
         // Board Background
         gfx.setColor(Color.GREEN);
-        gfx.fillRect(66, 110, 1280, 608);
+        gfx.fillRect(this.boardArea.x, this.boardArea.y, this.boardArea.width, this.boardArea.height);
         
-        // Temp
-        //gfx.drawImage(Drawing.getImage("terrain/test.png"), 66, 110, null);
-        boardObject.setRender(66, 110, 10, 10);
+        // Board Terrain
         boardObject.render(gfx);
         
         // Scrollbar Background
         gfx.setColor(Editor.getThemeColour("SCROLLBAR_BACKGROUND"));
-        gfx.fillRect(66, 718, 1280, 15);
-        gfx.fillRect(1346, 110, 15, 608);
-        gfx.fillRect(1346, 718, 15, 15);
+        gfx.fillRect(this.boardArea.x, this.boardArea.y + this.boardArea.height, this.boardArea.width, 15);
+        gfx.fillRect(this.boardArea.x + this.boardArea.width, this.boardArea.y, 15, this.boardArea.height);
+        gfx.fillRect(this.boardArea.x + this.boardArea.width, this.boardArea.y + this.boardArea.height, 15, 15);
         
         // Scrollbar Border
         gfx.setColor(Editor.getThemeColour("SCROLLBAR_BORDER"));
-        gfx.drawRect(66, 718, 1280, 15);
-        gfx.drawRect(1346, 110, 15, 608);
-        gfx.drawRect(1346, 718, 15, 15);
+        gfx.drawRect(this.boardArea.x, this.boardArea.y + this.boardArea.height, this.boardArea.width, 15);
+        gfx.drawRect(this.boardArea.x + this.boardArea.width, this.boardArea.y, 15, this.boardArea.height);
+        gfx.drawRect(this.boardArea.x + this.boardArea.width, this.boardArea.y + this.boardArea.height, 15, 15);
     }
     
     private void renderPanel(Graphics gfx)
     {
-        // Background
-        gfx.setColor(Editor.getThemeColour("TOOLBAR_BACKGROUND"));
-        gfx.fillRect(5, 110, 61, 623);
+        this.uiPanel.render(gfx);
+        if(this.toolGroup == "TERRAIN") {renderPanelTerrain(gfx);}
+        if(this.toolGroup == "ZONE") {renderPanelZone(gfx);}
+        if(this.toolGroup == "ENTITY") {renderPanelEntity(gfx);}
+    }
+    
+    private void renderPanelEntity(Graphics gfx)
+    {
+        // Panel Header
+        gfx.setColor(Editor.getThemeColour("TOOLBAR_TEXT"));
+        gfx.setFont(Editor.getThemeFont("TOOLBAR_HEADER_MINI"));
+        Drawing.write(gfx, "ENTITIES", 1282, 135, "CENTER");
+    }
+    
+    private void renderPanelTerrain(Graphics gfx)
+    {
+        // Panel Header
+        gfx.setColor(Editor.getThemeColour("TOOLBAR_TEXT"));
+        gfx.setFont(Editor.getThemeFont("TOOLBAR_HEADER_MINI"));
+        Drawing.write(gfx, "TERRAIN", 1282, 135, "CENTER");
         
-        // Border
+        // Tile Image
+        BufferedImage tile = Drawing.resize(Editor.structTilesetGetTile(this.toolPaint), 64, 64);
+        gfx.drawImage(tile, 1251, 150, null);
         gfx.setColor(Editor.getThemeColour("TOOLBAR_BORDER"));
-        gfx.drawRect(5, 110, 61, 623);
+        gfx.drawRect(1251, 150, 64, 64);
+        
+        // Tile Info
+        gfx.setColor(Editor.getThemeColour("TOOLBAR_TEXT"));
+        gfx.setFont(Editor.getThemeFont("TOOLBAR_MINI"));
+        Drawing.write(gfx, "hello", 1282, 250, "CENTER");
+    }
+    
+    private void renderPanelZone(Graphics gfx)
+    {
+        // Panel Header
+        gfx.setColor(Editor.getThemeColour("TOOLBAR_TEXT"));
+        gfx.setFont(Editor.getThemeFont("TOOLBAR_HEADER_MINI"));
+        Drawing.write(gfx, "ZONES", 1282, 135, "CENTER");
     }
     
     private void renderTools(Graphics gfx)
     {
-        // Background
-        gfx.setColor(Editor.getThemeColour("TOOLBAR_BACKGROUND"));
-        gfx.fillRect(5, 60, 1356, 50);
-        
-        // Border
-        gfx.setColor(Editor.getThemeColour("TOOLBAR_BORDER"));
-        gfx.drawRect(5, 60, 1356, 50);
+        this.uiTools.render(gfx);
+    }
+    
+    private void setFileUnsaved()
+    {
+        this.fileUnsaved = true;
     }
 
     public void tick()
