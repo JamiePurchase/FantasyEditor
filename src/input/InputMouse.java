@@ -6,6 +6,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.util.ArrayList;
+import state.StateBoard;
 
 public class InputMouse extends MouseAdapter implements MouseMotionListener
 {
@@ -13,10 +14,16 @@ public class InputMouse extends MouseAdapter implements MouseMotionListener
     public int mouseCoordsX;
     public int mouseCoordsY;
     
+    // Report
+    public boolean reportMove;
+    public StateBoard reportState;
+    
     public InputMouse()
     {
         mouseCoordsX = 0;
         mouseCoordsY = 0;
+        reportMove = false;
+        reportState = null;
     }
     
     public Point getPoint()
@@ -26,8 +33,12 @@ public class InputMouse extends MouseAdapter implements MouseMotionListener
     
     public void mouseMoved(MouseEvent e)
     {
+        // Update coordinates
         mouseCoordsX = e.getX();
         mouseCoordsY = e.getY();
+        
+        // Movement event
+        if(this.reportMove) {this.reportState.mouseMoved(e);}
     }
 
     @Override
@@ -40,6 +51,18 @@ public class InputMouse extends MouseAdapter implements MouseMotionListener
     public void mouseReleased (MouseEvent e)
     {
         Editor.mouseReleased(e);
+    }
+    
+    public void setReport()
+    {
+        reportMove = false;
+        reportState = null;
+    }
+    
+    public void setReport(StateBoard state)
+    {
+        reportMove = true;
+        reportState = state;
     }
 
 }

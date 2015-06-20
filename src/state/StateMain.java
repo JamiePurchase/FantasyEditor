@@ -86,7 +86,8 @@ public class StateMain extends State
         menu.addNexusAll(this);
         
         // Set status message
-        Editor.setInterfaceStatusMessage("Loading most recent project...");
+        Editor.getInputMouse().setReport();
+        Editor.setInterfaceStatus("Loading most recent project...");
     }
 
     public void keyPressed(InputKeyboardKey key)
@@ -109,34 +110,6 @@ public class StateMain extends State
         super.mouseNexusAdd(ref, element);
     }
     
-    public void mouseNexusClick(String ref)
-    {
-        /*if(ref.equals("EDITOR_QUIT"))
-        {
-            System.exit(0);
-        }
-        if(ref.equals("EDITOR_MENU_PROJECT_EXIT"))
-        {
-            System.exit(0);
-        }
-        if(ref.equals("EDITOR_MENU_PROJECT_NEW"))
-        {
-            // Test);
-        }
-        
-        // Test
-        if(ref.equals("EDITOR_MENU_HELP"))
-        {
-            Editor.setState(new StateScript());
-        }*/
-
-        // Temp
-        /*if(Editor.getInterfaceMenu().getMenu(0).getNexus().contains(e.getPoint()))
-        {
-            Editor.getInterfaceMenu().getMenu(0).setExpand(true);
-        }*/
-    }
-    
     public void mouseNexusContext(String ref)
     {
         //
@@ -144,7 +117,7 @@ public class StateMain extends State
 
     public void mousePressed(MouseEvent event)
     {
-        this.mouseNexusCheck(event.getPoint());
+        this.mouseNexusCheck(event);
     }
 
     public void mouseReleased(MouseEvent event)

@@ -22,6 +22,8 @@ public class Theme
         pallete.put("BUTTON_BACKGROUND_STANDARD_ACTIVE", Drawing.getColorRGB(205, 85, 85));
         pallete.put("BUTTON_BORDER", Drawing.getColorRGB(0, 0, 0));
         pallete.put("BUTTON_TEXT", Drawing.getColorRGB(0, 0, 0));
+        pallete.put("SCROLLBAR_BACKGROUND", Drawing.getColorRGB(80, 80, 80));
+        pallete.put("SCROLLBAR_BORDER", Drawing.getColorRGB(0, 0, 0));
         pallete.put("TITLEBAR_BACKGROUND", Drawing.getColorRGB(110, 140, 170));
         pallete.put("TITLEBAR_BORDER", Drawing.getColorRGB(0, 0, 0));
         pallete.put("TITLEBAR_TEXT", Drawing.getColorRGB(0, 0, 0));

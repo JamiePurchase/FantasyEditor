@@ -9,10 +9,8 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferStrategy;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import javax.swing.JPanel;
 import project.Project;
 import project.ProjectService;
@@ -74,6 +72,9 @@ public class Editor extends JPanel implements Runnable
         this.uiStatus = new Toolbar("EDITOR_STATUS", 5, 733, Editor.getAppWidth() - 10);
         this.uiStatus.addLabel("EDITOR_STATUS_MESSSAGE", "", 10, 20, 1200, "LEFT");
         this.uiStatus.addLabel("EDITOR_STATUS_CLOCK", "", 1346, 20, 1200, "RIGHT");
+        this.uiStatus.addLabel("EDITOR_STATUS_LABEL2", "", 300, 20, 300, "LEFT");
+        this.uiStatus.addLabel("EDITOR_STATUS_LABEL3", "", 600, 20, 300, "LEFT");
+        this.uiStatus.addLabel("EDITOR_STATUS_LABEL4", "", 900, 20, 300, "LEFT");
     }
     
     private void createWindow()
@@ -264,9 +265,17 @@ public class Editor extends JPanel implements Runnable
         uiMenu = menu;
     }
     
-    public static void setInterfaceStatusMessage(String message)
+    public static void setInterfaceStatus(String message)
     {
         uiStatus.getLabel(0).setText(message);
+    }
+    
+    public static void setInterfaceStatus(String message, String boardPos, String boardTile, String boardInfo)
+    {
+        uiStatus.getLabel(0).setText(message);
+        uiStatus.getLabel(2).setText(boardPos);
+        uiStatus.getLabel(3).setText(boardTile);
+        uiStatus.getLabel(4).setText(boardInfo);
     }
     
     public static void setProject(String ref)

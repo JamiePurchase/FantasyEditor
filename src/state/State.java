@@ -44,24 +44,34 @@ public abstract class State
         mouseNexus.add(new ElementNexus(ref, element));
     }
     
-    public void mouseNexusCheck(Point point)
+    public void mouseNexusCheck(MouseEvent event)
     {
         boolean found = false;
         for(int e = 0; e < mouseNexus.size(); e++)
         {
-            if(mouseNexus.get(e).contains(point))
+            if(mouseNexus.get(e).contains(event.getPoint()))
             {
-                // Element has been clicked
-                boolean activate = true;
-                
-                // Does a modal have focus? Is this element part of the modal?
-                if(Editor.getState().getModalActive() && !mouseNexus.get(e).getElement().getModalElement()) {activate = false;}
-                
-                // Activate this element
-                if(activate)
+                // Left Click
+                if(event.getButton() == MouseEvent.BUTTON1)
                 {
-                    mouseNexus.get(e).getElement().activate();
-                    found = true;
+                    // Element has been clicked
+                    boolean activate = true;
+
+                    // Does a modal have focus? Is this element part of the modal?
+                    if(Editor.getState().getModalActive() && !mouseNexus.get(e).getElement().getModalElement()) {activate = false;}
+
+                    // Activate this element
+                    if(activate)
+                    {
+                        mouseNexus.get(e).getElement().activate();
+                        found = true;
+                    }
+                }
+                
+                // Right Click
+                if(event.getButton() == MouseEvent.BUTTON3)
+                {
+                    //
                 }
             }
         }
