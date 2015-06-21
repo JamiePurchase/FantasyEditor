@@ -128,9 +128,14 @@ public class Editor extends JPanel implements Runnable
         return uiStatus;
     }
     
-    public static String getPath()
+    public static String getPathEditor()
     {
         return "C:/Users/Jamie/Documents/NetBeansProjects/FantasyEditor/";
+    }
+    
+    public static String getPathEngine()
+    {
+        return "C:/Users/Jamie/Documents/NetBeansProjects/FantasyEngine/";
     }
     
     public static Project getProject()

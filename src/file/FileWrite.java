@@ -14,7 +14,7 @@ public class FileWrite
 
     public FileWrite(String newPath, boolean newAppend)
     {
-        writePath = Editor.getPath() + "data/" + newPath;
+        writePath = Editor.getPathEditor() + "data/" + newPath;
         writeAppend = newAppend;
         writeBreak = System.getProperty("line.separator");
     }

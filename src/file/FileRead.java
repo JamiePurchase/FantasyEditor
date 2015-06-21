@@ -12,7 +12,7 @@ public class FileRead
 
     public FileRead(String newPath)
     {
-        readPath = Editor.getPath() + "data/" + newPath;
+        readPath = Editor.getPathEditor() + "data/" + newPath;
     }
 
     public FileRead(File newPath)

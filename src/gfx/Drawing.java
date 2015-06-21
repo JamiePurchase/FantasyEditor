@@ -92,7 +92,7 @@ public class Drawing
 
     public static BufferedImage getImage(String filepath)
     {
-        return getImageFile(Editor.getPath() + "res/" + filepath);
+        return getImageFile(Editor.getPathEngine() + "res/" + filepath);
     }
 
     public static BufferedImage getImageFile(String filepath)

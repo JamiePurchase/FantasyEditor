@@ -1,17 +1,22 @@
 package board;
 
 import app.Editor;
+import audio.Soundtrack;
 import file.FileWrite;
 import gfx.Drawing;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
 public class Board
 {
     private String ref;
-    private int sizeX, sizeY;
+    private String titleBoard, titleArea;
+    private Soundtrack soundtrack;
     
     // Terrain
+    private int sizeX, sizeY;
+    private Color background;
     private String terrain[][];
     
     // Zones
@@ -21,13 +26,17 @@ public class Board
     private int scrollX, scrollY;
     private int renderPosX, renderPosY, renderSizeX, renderSizeY;
     
-    public Board(String ref, int sizeX, int sizeY)
+    public Board(String ref, String title1, String title2, int sizeX, int sizeY, Soundtrack soundtrack)
     {
         this.ref = ref;
         this.sizeX = sizeX;
         this.sizeY = sizeY;
+        this.titleBoard = title1;
+        this.titleArea = title2;
+        this.soundtrack = soundtrack;
         
         // Terrain
+        this.background = Color.BLACK;
         this.terrain = new String[sizeX][sizeY];
         
         // Zones
@@ -40,6 +49,11 @@ public class Board
         this.renderPosY = 0;
         this.renderSizeX = 0;
         this.renderSizeY = 0;
+    }
+    
+    public Color getBackground()
+    {
+        return this.background;
     }
     
     public int getBoardPosX(int screenX)
@@ -84,7 +98,29 @@ public class Board
         // Build an array list
         ArrayList<String> data = new ArrayList<String>();
         data.add("! BOARD FILE - " + this.getRef() + " !");
-        data.add("");
+        data.add(this.titleBoard + "|" + this.titleArea);
+        data.add(this.background.toString());
+        data.add(this.soundtrack.getRef());
+        // NOTE: make sure all data gets added here, when boards are developed
+        
+        // Terrain data
+        data.add("! TERRAIN !");
+        for(int x = 0; x < this.sizeX; x++)
+        {
+            for(int y = 0; y < this.sizeY; y++)
+            {
+                data.add(this.terrain[x][y]);
+            }
+        }
+        
+        // Zone data
+        data.add("! ZONE !");
+        for(int z = 0; z < this.zones.size(); z++)
+        {
+            data.add(this.zones.get(z).getData());
+        }
+        
+        // NOTE: we need other things
         
         // Convert to array
         String[] result = new String[data.size()];
@@ -156,6 +192,11 @@ public class Board
     {
         FileWrite fw = new FileWrite("workspace/Test/boards/" + this.getRef() + ".jf1brd", false);
         fw.FileWriteArray(this.getSaveData());
+    }
+    
+    public void setBackground(Color colour)
+    {
+        this.background = colour;
     }
     
     public void setRender(int posX, int posY, int sizeX, int sizeY)

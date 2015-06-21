@@ -34,7 +34,7 @@ public class Project
     private void fragmentLoad()
     {
         this.fragments = new HashMap<String, ArrayList<Fragment>>();
-        String folder = Editor.getPath() + "data/workspace/Test/";
+        String folder = Editor.getPathEditor() + "data/workspace/Test/";
         this.fragments.put("BOARDS", FileService.getFolder(new File(folder + "boards/"), ".jf1brd"));
         this.fragments.put("QUESTS", FileService.getFolder(new File(folder + "quests/"), ".jf1qst"));
     }

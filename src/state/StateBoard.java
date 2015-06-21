@@ -2,6 +2,7 @@ package state;
 
 import app.Editor;
 import board.Board;
+import board.BoardService;
 import gfx.Drawing;
 import gfx.Theme;
 import input.InputKeyboardKey;
@@ -54,9 +55,7 @@ public class StateBoard extends State
         this.setModal();
         
         // Board
-        this.boardObject = new Board("test", 100, 100);
-        this.boardObject.setTerrainAll("test|0|0");
-        this.boardObject.setRender(5, 110, 10, 10);
+        this.boardObject = BoardService.getBoardTest();
         this.boardArea = new Rectangle(5, 110, 1184, 608);
         
         // Tools
@@ -69,6 +68,9 @@ public class StateBoard extends State
         
         // Create Nexus for each element (cascades down)
         this.mouseNexusAdd("EDITOR_QUIT", Editor.getInterfaceFrame().getCloseButton());
+        //this.mouseNexusAdd("TILESET_BROWSE", )
+        // NOTE: the above needs to link to a Picture element that will replace the terrain image
+        // however this panel is only visible some of the time (nexus must be aware of this)
         Editor.getInterfaceMenu().addNexusAll(this);
         
         // Status Bar
@@ -180,6 +182,9 @@ public class StateBoard extends State
         // if we're adding before the current 0,0 then we need to push all existing terrain, zones
         // and entities ahead
         return menu;
+        
+        // NOTE: we should have a selection brush, that allows for drawing a rect and selecting many tiles
+        // with the ability to copy and paste the terrain
     }
     
     public void mouseNexusAdd(Element element)

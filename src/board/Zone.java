@@ -9,11 +9,25 @@ public class Zone
     private Board board;
     private String ref;
     private Rectangle rect;
+    private boolean solid;
     
-    public Zone(Board board, String ref, int posX, int posY, int sizeX, int sizeY)
+    public Zone(Board board, String ref, int posX, int posY, int sizeX, int sizeY, boolean solid)
     {
         this.ref = ref;
         this.rect = new Rectangle(posX, posY, sizeX, sizeY);
+        this.solid = solid;
+    }
+    
+    /**
+     * Collect all object data as a string for saving
+     * 
+     * @return string delimited by pipe characters
+     */
+    public String getData()
+    {
+        return this.ref + "|" + this.rect.x + "|" + this.rect.y + "|" + this.rect.width + "|" + this.rect.height + "|" + this.solid;
+        // NOTE: when zones are devloped (eg: scripts attached with conditions) this will need rethinking
+        // subclasses could override this method and write things differently
     }
     
     public Rectangle getRect()
@@ -24,6 +38,11 @@ public class Zone
     public String getRef()
     {
         return this.ref;
+    }
+    
+    public boolean getSolid()
+    {
+        return this.solid;
     }
     
     public void render(Graphics gfx)
