@@ -74,7 +74,8 @@ public class StateBoard extends State
         this.setModal();
         
         // Board
-        this.boardObject = BoardService.getBoardTest();
+        this.boardObject = null;
+        //this.boardObject = BoardService.getBoardTest();
         this.boardArea = new Rectangle(5, 110, 1184, 608);
         
         // Tools
@@ -91,6 +92,7 @@ public class StateBoard extends State
         Editor.getInterfaceMenu().addNexusAll(this);
         
         // Status Bar
+        Editor.setInterfaceStatus("Load an existing board or create a new one...", "", "", "");
         Editor.getInputMouse().setReport(this);
     }
     
@@ -115,22 +117,9 @@ public class StateBoard extends State
     
     private void fileSave()
     {
-        // Update current file
-        if(this.fileActive)
-        {
-            Editor.setInterfaceStatus("Saving board...");
-            this.boardObject.save(this.fileRef);
-            this.fileUnsaved = false;
-        }
-        
-        // Create new file
-        else
-        {
-            // NOTE: propmt for a file name then save the board
-            // be sure to set the fileActive, fileRef and fileUnsaved variables afterwards
-        }
-        
-        // NOTE: it would be good to change the status bar message to 'saving...'
+        Editor.setInterfaceStatus("Saving board...");
+        this.boardObject.save(this.fileRef);
+        this.fileUnsaved = false;
     }
     
     private String getFileTitle()
@@ -157,14 +146,12 @@ public class StateBoard extends State
     
     private Toolbar loadInterface()
     {
-        // Debug
-        System.out.println("Loading interface for " + this.getClass().toString() + " state");
         this.mouseNexusClear();
         Toolbar menu = new Toolbar("EDITOR_MENU", 5, 30, Editor.getAppWidth() - 10);
-        menu.addMenu("EDITOR_MENU_FILE", "FILE");
-        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_NEW", "NEW");
-        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_OPEN", "OPEN");
-        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_SAVE", "SAVE", new ActionBoard(this)
+        menu.addMenu("EDITOR_MENU_FILE", "FILE", false);
+        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_NEW", "NEW", false);
+        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_OPEN", "OPEN", false);
+        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_SAVE", "SAVE", true, new ActionBoard(this)
         {
             @Override
             public void activate()
@@ -176,11 +163,11 @@ public class StateBoard extends State
                 this.getBoard().fileSave();
             }
         });
-        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_SAVEAS", "SAVE AS");
-        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_CLOSE", "CLOSE");
-        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_DONE", "DONE");
-        menu.addMenu("EDITOR_MENU_BOARD", "BOARD");
-        menu.getMenu(1).addMenu("EDITOR_MENU_BOARD_SETTINGS", "SETTINGS", new Action()
+        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_SAVEAS", "SAVE AS", true);
+        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_CLOSE", "CLOSE", true);
+        menu.getMenu(0).addMenu("EDITOR_MENU_FILE_DONE", "DONE", false);
+        menu.addMenu("EDITOR_MENU_BOARD", "BOARD", false);
+        menu.getMenu(1).addMenu("EDITOR_MENU_BOARD_SETTINGS", "SETTINGS", true, new Action()
         {
             @Override
             public void activate()
@@ -194,7 +181,7 @@ public class StateBoard extends State
                 Editor.getState().setModal(modal);
             }
         });
-        menu.getMenu(1).addMenu("EDITOR_MENU_BOARD_SETTINGS", "DIMENSIONS");
+        menu.getMenu(1).addMenu("EDITOR_MENU_BOARD_SETTINGS", "DIMENSIONS", true);
         // NOTE: we need the ability to insert x new rows / columns either side of the existing tiles
         // if we're adding before the current 0,0 then we need to push all existing terrain, zones
         // and entities ahead
@@ -216,15 +203,18 @@ public class StateBoard extends State
     
     public void mouseMoved(MouseEvent event)
     {
-        if(this.boardArea.contains(event.getPoint()))
+        if(this.fileActive)
         {
-            int posX = this.boardObject.getBoardPosX(event.getX());
-            int posY = this.boardObject.getBoardPosY(event.getY());
-            int tileX = this.boardObject.getTileX(posX);
-            int tileY = this.boardObject.getTileY(posY);
-            Editor.setInterfaceStatus(this.getToolName(), posX + "," + posY, tileX + "," + tileY, "");
+            if(this.boardArea.contains(event.getPoint()))
+            {
+                int posX = this.boardObject.getBoardPosX(event.getX());
+                int posY = this.boardObject.getBoardPosY(event.getY());
+                int tileX = this.boardObject.getTileX(posX);
+                int tileY = this.boardObject.getTileY(posY);
+                Editor.setInterfaceStatus(this.getToolName(), posX + "," + posY, tileX + "," + tileY, "");
+            }
+            else {Editor.setInterfaceStatus(this.getToolName(), "", "", "");}
         }
-        else {Editor.setInterfaceStatus(this.getToolName(), "", "", "");}
     }
 
     public void mousePressed(MouseEvent event)
@@ -263,7 +253,7 @@ public class StateBoard extends State
         gfx.fillRect(this.boardArea.x, this.boardArea.y, this.boardArea.width, this.boardArea.height);
         
         // Board Terrain
-        boardObject.render(gfx);
+        if(this.fileActive) {boardObject.render(gfx);}
         
         // Board Border
         gfx.setColor(Editor.getThemeColour("TOOLBAR_BORDER"));
@@ -285,9 +275,12 @@ public class StateBoard extends State
     private void renderPanel(Graphics gfx)
     {
         this.uiPanel.render(gfx);
-        if(this.toolGroup == "TERRAIN") {renderPanelTerrain(gfx);}
-        if(this.toolGroup == "ZONE") {renderPanelZone(gfx);}
-        if(this.toolGroup == "ENTITY") {renderPanelEntity(gfx);}
+        if(this.fileActive)
+        {
+            if(this.toolGroup == "TERRAIN") {renderPanelTerrain(gfx);}
+            if(this.toolGroup == "ZONE") {renderPanelZone(gfx);}
+            if(this.toolGroup == "ENTITY") {renderPanelEntity(gfx);}
+        }
     }
     
     private void renderPanelEntity(Graphics gfx)

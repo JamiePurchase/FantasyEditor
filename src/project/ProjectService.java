@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 
 public class ProjectService
 {
+    
     public static Project getProject(String ref)
     {
         try
@@ -18,4 +19,5 @@ public class ProjectService
         catch (IOException ex) {System.out.println(ex);}
         return null;
     }
+    
 }

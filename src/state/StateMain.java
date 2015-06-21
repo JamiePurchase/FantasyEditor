@@ -28,44 +28,44 @@ public class StateMain extends State
         menu.getMenu(0).addMenu("EDITOR_MENU_PROJECT_NEW", "NEW");
         menu.getMenu(0).addMenu("EDITOR_MENU_PROJECT_OPEN", "OPEN");
         menu.getMenu(0).addMenu("EDITOR_MENU_PROJECT_CLOSE", "CLOSE");
-        menu.getMenu(0).addMenu("EDITOR_MENU_PROJECT_EXIT", "EXIT", new Action()
+        menu.getMenu(0).addMenu("EDITOR_MENU_PROJECT_EXIT", "EXIT", false, new Action()
         {
             @Override
             public void activate() {System.exit(0);}
         });
         menu.addMenu("EDITOR_MENU_EDITOR", "EDITOR");
-        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_BOARD", "BOARD", new Action()
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_BOARD", "BOARD", false, new Action()
         {
             @Override
             public void activate() {Editor.setState(new StateBoard());}
         });
-        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_CHARACTER", "CHARACTER", new Action()
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_CHARACTER", "CHARACTER", false, new Action()
         {
             @Override
             public void activate() {Editor.setState(new StateCharacter());}
         });
-        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_ENEMY", "ENEMY", new Action()
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_ENEMY", "ENEMY", false, new Action()
         {
             @Override
             public void activate() {Editor.setState(new StateEnemy());}
         });
-        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_QUEST", "QUEST", new Action()
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_QUEST", "QUEST", false, new Action()
         {
             @Override
             public void activate() {Editor.setState(new StateQuest());}
         });
-        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_SCRIPT", "SCRIPT", new Action()
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_SCRIPT", "SCRIPT", false, new Action()
         {
             @Override
             public void activate() {Editor.setState(new StateScript());}
         });
-        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_TILESET", "TILESET", new Action()
+        menu.getMenu(1).addMenu("EDITOR_MENU_EDITOR_TILESET", "TILESET", false, new Action()
         {
             @Override
             public void activate() {Editor.setState(new StateTileset());}
         });
         menu.addMenu("EDITOR_MENU_HELP", "HELP");
-        menu.getMenu(2).addMenu("EDITOR_MENU_HELP_ABOUT", "ABOUT", new Action()
+        menu.getMenu(2).addMenu("EDITOR_MENU_HELP_ABOUT", "ABOUT", false, new Action()
         {
             @Override
             public void activate()

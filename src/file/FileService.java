@@ -15,9 +15,6 @@ public class FileService
 	
     public static ArrayList<Fragment> getFolder(final File folder, String type)
     {
-        // Debug
-        System.out.println("Loading '" + type + "' files in " + folder);
-        
         ArrayList<Fragment> result = new ArrayList<Fragment>();
         File[] filesList = folder.listFiles();
         for(File f : filesList)

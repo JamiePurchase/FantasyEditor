@@ -16,8 +16,9 @@ public class ToolbarMenu extends Element
     private boolean expand;
     private boolean actionDefault;
     private Action actionObject;
+    private boolean locked;
     
-    public ToolbarMenu(String ref, Toolbar toolbar, String text, int posX, int posY)
+    public ToolbarMenu(String ref, Toolbar toolbar, String text, int posX, int posY, boolean locked)
     {
         this.setRef(ref);
         this.setPosX(posX);
@@ -31,9 +32,10 @@ public class ToolbarMenu extends Element
         this.setExpand(false);
         this.actionDefault = true;
         this.actionObject = null;
+        this.locked = locked;
     }
     
-    public ToolbarMenu(String ref, ToolbarMenu menu, String text, int posX, int posY)
+    public ToolbarMenu(String ref, ToolbarMenu menu, String text, int posX, int posY, boolean locked)
     {
         this.setRef(ref);
         this.setPosX(posX);
@@ -47,16 +49,13 @@ public class ToolbarMenu extends Element
         this.setExpand(false);
         this.actionDefault = true;
         this.actionObject = null;
+        this.locked = locked;
     }
     
     public void activate()
     {
         if(this.getVisible())
         {
-            // Debug
-            System.out.println("Activating " + this.getRef());
-            System.out.println("actionDefault: " + this.actionDefault);
-            
             // Custom Action
             if(!this.actionDefault) {this.actionObject.activate();}
             
@@ -79,12 +78,17 @@ public class ToolbarMenu extends Element
     
     public void addMenu(String ref, String text)
     {
-        this.elements.add(new ToolbarMenu(ref, this, text, this.getPosX(), this.getPosY() + ((this.elements.size() + 1) * 30)));
+        addMenu(ref, text, false);
     }
     
-    public void addMenu(String ref, String text, Action action)
+    public void addMenu(String ref, String text, boolean locked)
     {
-        ToolbarMenu menu = new ToolbarMenu(ref, this, text, this.getPosX(), this.getPosY() + ((this.elements.size() + 1) * 30));
+        this.elements.add(new ToolbarMenu(ref, this, text, this.getPosX(), this.getPosY() + ((this.elements.size() + 1) * 30), locked));
+    }
+    
+    public void addMenu(String ref, String text, boolean locked, Action action)
+    {
+        ToolbarMenu menu = new ToolbarMenu(ref, this, text, this.getPosX(), this.getPosY() + ((this.elements.size() + 1) * 30), locked);
         menu.setAction(action);
         this.elements.add(menu);
     }
@@ -109,6 +113,11 @@ public class ToolbarMenu extends Element
     public boolean getExpand()
     {
         return this.expand;
+    }
+    
+    public boolean getLocked()
+    {
+        return this.locked;
     }
     
     public ToolbarMenu getMenu(int pos)
@@ -139,6 +148,7 @@ public class ToolbarMenu extends Element
     @Override
     public boolean getValidAction()
     {
+        if(this.getLocked()) {return false;}
         if(!this.getVisible()) {return false;}
         if(!this.getParentTop())
         {
@@ -151,12 +161,13 @@ public class ToolbarMenu extends Element
     {
         // Highlight
         gfx.setColor(Editor.getThemeColour("TOOLBAR_BACKGROUND"));
-        if(this.getHover()) {gfx.setColor(Editor.getThemeColour("TOOLBAR_BACKGROUND_ACTIVE"));}
+        if(this.getHover() && !this.getLocked()) {gfx.setColor(Editor.getThemeColour("TOOLBAR_BACKGROUND_ACTIVE"));}
         gfx.fillRect(this.getPosX() + 1, this.getPosY() + 1, this.getSizeX() - 1, this.getSizeY() - 1);
         
         // Text
         gfx.setColor(Editor.getThemeColour("TOOLBAR_TEXT"));
-        gfx.setFont(Editor.getThemeFont("TOOLBAR_TEXT"));
+        if(this.getLocked()) {gfx.setFont(Editor.getThemeFont("TOOLBAR_TEXT_LOCKED"));}
+        else {gfx.setFont(Editor.getThemeFont("TOOLBAR_TEXT"));}
         Drawing.write(gfx, this.getText(), this.getPosXCenter(), this.getPosY() + 20, "CENTER");
         
         // Expand
@@ -183,9 +194,6 @@ public class ToolbarMenu extends Element
     
     public void setAction(Action action)
     {
-        // Debug
-        System.out.println("Setting custom action for " + this.getRef());
-        
         this.actionDefault = false;
         this.actionObject = action;
     }
@@ -196,6 +204,11 @@ public class ToolbarMenu extends Element
         
         // Collapse child elements
         if(!expand) {this.collapse();}
+    }
+    
+    public void setLocked(boolean locked)
+    {
+        this.locked = locked;
     }
     
     public void setParent(Toolbar toolbar)

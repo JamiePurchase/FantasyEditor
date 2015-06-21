@@ -31,7 +31,12 @@ public class Toolbar extends Element
     
     public void addMenu(String ref, String text)
     {
-        this.elements.add(new ToolbarMenu(ref, this, text, this.getPosX() + (this.elements.size() * 100), this.getPosY()));
+        addMenu(ref, text, false);
+    }
+    
+    public void addMenu(String ref, String text, boolean locked)
+    {
+        this.elements.add(new ToolbarMenu(ref, this, text, this.getPosX() + (this.elements.size() * 100), this.getPosY(), locked));
     }
     
     public void addNexusAll(State state)

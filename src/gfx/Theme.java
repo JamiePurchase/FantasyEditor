@@ -31,12 +31,14 @@ public class Theme
         pallete.put("TOOLBAR_BACKGROUND_ACTIVE", Drawing.getColorRGB(170, 170, 170));
         pallete.put("TOOLBAR_BORDER", Drawing.getColorRGB(0, 0, 0));
         pallete.put("TOOLBAR_TEXT", Drawing.getColorRGB(0, 0, 0));
+        pallete.put("TOOLBAR_TEXT_LOCKED", Drawing.getColorRGB(55, 40, 40));
         pallete.put("ZONE_BORDER", Drawing.getColorRGB(235, 95, 0));
         
         // Typeface Styles
         this.typeface = new HashMap<String, Font>();
         typeface.put("BUTTON_TEXT", new Font("Courier New", Font.PLAIN, 16));
         typeface.put("BUTTON_TEXT_BOLD", new Font("Courier New", Font.BOLD, 16));
+        typeface.put("FRAGMENT_LIST", new Font("Courier New", Font.PLAIN, 12));
         typeface.put("MENUBAR_TEXT", new Font("Courier New", Font.PLAIN, 16));
         typeface.put("STANDARD", new Font("Andalus", Font.PLAIN, 26));
         typeface.put("TITLEBAR_TEXT", new Font("Andalus", Font.PLAIN, 22));
