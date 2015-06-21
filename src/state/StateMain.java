@@ -10,10 +10,15 @@ import ui.Action;
 import ui.Element;
 import ui.FrameModal;
 import ui.Label;
+import ui.Panel;
+import ui.PanelFloat;
 import ui.Toolbar;
 
 public class StateMain extends State
 {
+    private boolean uiProjectActive;
+    private Panel uiProjectObject;
+    
     public StateMain()
     {
         // Frame Title
@@ -81,6 +86,15 @@ public class StateMain extends State
         });
         Editor.setInterfaceMenu(menu);
         
+        // Project Explorer
+        this.uiProjectActive = true;
+        this.uiProjectObject = new PanelFloat("EDITOR_PROJECT_EXPLORER", "Project Explorer", 50, 300, 200, 300);
+        
+        // NOTE: remember the positions and visibilty of optional menus with the config file
+        // the application should resume work on the last opened project, settings intact
+        
+        // NOTE: we need to add a nexus to the uiProjectObject (is it possible to drag and move this?)
+        
         // Create Nexus for each element (cascades down)
         this.mouseNexusAdd("EDITOR_QUIT", Editor.getInterfaceFrame().getCloseButton());
         menu.addNexusAll(this);
@@ -127,11 +141,15 @@ public class StateMain extends State
 
     public void render(Graphics gfx)
     {
+        // Modal
         if(this.getModalActive())
         {
             Drawing.fadeScreen(gfx, 0.5f);
             this.getModalFrame().render(gfx);
         }
+        
+        // Project Explorer
+        if(this.uiProjectActive) {this.uiProjectObject.render(gfx);}
     }
 
     public void tick()

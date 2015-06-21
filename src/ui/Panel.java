@@ -15,6 +15,11 @@ public class Panel
         this.rect = new Rectangle(posX, posY, sizeX, sizeY);
     }
     
+    public Rectangle getRect()
+    {
+        return this.rect;
+    }
+    
     public void render(Graphics gfx)
     {
         // Background
