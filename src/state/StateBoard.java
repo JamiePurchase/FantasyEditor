@@ -16,6 +16,7 @@ import ui.ActionBoard;
 import ui.Element;
 import ui.FrameModal;
 import ui.Panel;
+import ui.Picture;
 import ui.Toolbar;
 
 public class StateBoard extends State
@@ -27,6 +28,7 @@ public class StateBoard extends State
     
     // Interface
     private Panel uiTools, uiPanel;
+    private Picture uiPanelTerrain;
     
     // Board
     private Board boardObject;
@@ -45,11 +47,28 @@ public class StateBoard extends State
         this.fileRef = "";
         this.fileUnsaved = false;
         
-        // Interface
+        // Interface (constant)
         this.setTitle("Board Editor", this.getFileTitle());
         Editor.setInterfaceMenu(this.loadInterface());
         this.uiTools = new Panel("EDITOR_BOARD_TOOLS", 5, 60, 1356, 50);
         this.uiPanel = new Panel("EDITOR_BOARD_PANEL", 1204, 110, 157, 623);
+        
+        // Interface (partial)
+        this.uiPanelTerrain = new Picture("EDITOR_PANEL_TERRAIN_TILE", null, true, 1251, 150, 64, 64);
+        this.uiPanelTerrain.setImage(Drawing.resize(Editor.structTilesetGetTile("test|3|1"), 64, 64));
+        this.uiPanelTerrain.setAction(new Action()
+        {
+            @Override
+            public void activate()
+            {
+                // Create the tileset modal
+                FrameModal modal = new FrameModal("MODAL_TERRAIN_BROWSER", "Tileset", 800, 400);
+                
+                // Close menu and display modal
+                Editor.getInterfaceMenu().collapse();
+                Editor.getState().setModal(modal);
+            }
+        });
         
         // Modal
         this.setModal();
@@ -68,9 +87,7 @@ public class StateBoard extends State
         
         // Create Nexus for each element (cascades down)
         this.mouseNexusAdd("EDITOR_QUIT", Editor.getInterfaceFrame().getCloseButton());
-        //this.mouseNexusAdd("TILESET_BROWSE", )
-        // NOTE: the above needs to link to a Picture element that will replace the terrain image
-        // however this panel is only visible some of the time (nexus must be aware of this)
+        this.mouseNexusAdd("TILESET_BROWSE", this.uiPanelTerrain);
         Editor.getInterfaceMenu().addNexusAll(this);
         
         // Status Bar
@@ -289,10 +306,7 @@ public class StateBoard extends State
         Drawing.write(gfx, "TERRAIN", 1282, 135, "CENTER");
         
         // Tile Image
-        BufferedImage tile = Drawing.resize(Editor.structTilesetGetTile(this.toolPaint), 64, 64);
-        gfx.drawImage(tile, 1251, 150, null);
-        gfx.setColor(Editor.getThemeColour("TOOLBAR_BORDER"));
-        gfx.drawRect(1251, 150, 64, 64);
+        uiPanelTerrain.render(gfx);
         
         // Tile Info
         gfx.setColor(Editor.getThemeColour("TOOLBAR_TEXT"));
@@ -316,6 +330,21 @@ public class StateBoard extends State
     private void setFileUnsaved()
     {
         this.fileUnsaved = true;
+    }
+    
+    public void setTool(String active, String group, String paint)
+    {
+        this.toolActive = active;
+        this.toolGroup = group;
+        this.toolPaint = paint;
+        
+        // Update the icon on the panel
+        if(this.toolGroup == "TERRAIN")
+        {
+            this.uiPanelTerrain.setImage(Drawing.resize(Editor.structTilesetGetTile(this.toolPaint), 64, 64));
+            this.uiPanelTerrain.setVisible(true);
+        }
+        else {this.uiPanelTerrain.setVisible(false);}
     }
 
     public void tick()

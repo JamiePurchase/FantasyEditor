@@ -89,9 +89,20 @@ public class Drawing
         float hsb[] = Color.RGBtoHSB(r,g,b,null);
         return Color.getHSBColor(hsb[0], hsb[1], hsb[2]);
     }
+    
+    public static String getColorString(Color colour)
+    {
+        return colour.getRed() + "|" + colour.getGreen() + "|" + colour.getBlue();
+    }
 
     public static BufferedImage getImage(String filepath)
     {
+        return getImageFile(Editor.getPathEngine() + "res/" + filepath);
+    }
+
+    public static BufferedImage getImage(String filepath, String directory)
+    {
+        if(directory.equals("EDITOR")) {return getImageFile(Editor.getPathEditor() + "res/" + filepath);}
         return getImageFile(Editor.getPathEngine() + "res/" + filepath);
     }
 
