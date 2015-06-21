@@ -19,6 +19,8 @@ import state.State;
 import state.StateMain;
 import tileset.TilesetService;
 import tileset.TilesetStructure;
+import ui.Context;
+import ui.Element;
 import ui.FrameWindow;
 import ui.Toolbar;
 
@@ -36,6 +38,12 @@ public class Editor extends JPanel implements Runnable
     // Interface
     private static FrameWindow uiFrame;
     private static Toolbar uiMenu, uiStatus;
+    
+    // Context
+    private static Context uiContextObject;
+    private static boolean uiContextActive, uiContextCount;
+    private static int uiContextTick;
+    private static Element uiContextElement;
     
     // Input
     private static InputKeyboard inputKeyboard;
@@ -233,6 +241,9 @@ public class Editor extends JPanel implements Runnable
         
         // Interface (foreground)
         uiMenu.render(gfx);
+        
+        // Context Menu (NOTE: should be called tooltip!)
+        if(uiContextActive) {uiContextObject.render(gfx);}
     }
     
     public void run()
@@ -335,6 +346,13 @@ public class Editor extends JPanel implements Runnable
         // Status Clock
         this.tickStatusClock();
         
+        // Context Tick
+        if(uiContextCount)
+        {
+            uiContextTick += 1;
+            if(uiContextTick > 30) {uiContextCreate();}
+        }
+        
         // State Tick
         this.getState().tick();
     }
@@ -342,6 +360,34 @@ public class Editor extends JPanel implements Runnable
     private void tickStatusClock()
     {
         uiStatus.getLabel(1).setText(new SimpleDateFormat("HH:mm:ss dd/MM/yyyy").format(new Date()));
+    }
+    
+    public static void uiContextClear()
+    {
+        uiContextActive = false;
+        uiContextObject = null;
+        uiContextCount = false;
+        uiContextTick = 0;
+        uiContextElement = null;
+    }
+    
+    public static void uiContextCount(Element element)
+    {
+        uiContextCount = true;
+        uiContextTick = 0;
+        uiContextElement = element;
+    }
+    
+    public static void uiContextCreate()
+    {
+        uiContextActive = true;
+        uiContextObject = new Context(uiContextElement.getTooltipString());
+        uiContextCount = false;
+    }
+    
+    public static boolean uiContextGetActive()
+    {
+        return uiContextActive;
     }
     
 }

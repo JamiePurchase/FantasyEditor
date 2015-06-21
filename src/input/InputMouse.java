@@ -37,6 +37,15 @@ public class InputMouse extends MouseAdapter implements MouseMotionListener
         mouseCoordsX = e.getX();
         mouseCoordsY = e.getY();
         
+        // Context (clear existing element due to moving)
+        if(Editor.uiContextGetActive()) {Editor.uiContextClear();}
+        
+        // Context (check new location for potential requirement)
+        if(Editor.getState().mouseNexusCheck(e.getPoint()) != null)
+        {
+            Editor.uiContextCount(Editor.getState().mouseNexusCheck(e.getPoint()));
+        }
+        
         // Movement event
         if(this.reportMove) {this.reportState.mouseMoved(e);}
     }

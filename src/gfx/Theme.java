@@ -18,10 +18,16 @@ public class Theme
         pallete.put("APP_BORDER", Drawing.getColorRGB(70, 80, 60));
         pallete.put("BUTTON_BACKGROUND_CLOSE", Drawing.getColorRGB(185, 85, 85));
         pallete.put("BUTTON_BACKGROUND_CLOSE_ACTIVE", Drawing.getColorRGB(205, 85, 85));
-        pallete.put("BUTTON_BACKGROUND_STANDARD", Drawing.getColorRGB(185, 85, 85));
-        pallete.put("BUTTON_BACKGROUND_STANDARD_ACTIVE", Drawing.getColorRGB(205, 85, 85));
+        pallete.put("BUTTON_BACKGROUND_SELECTED", Drawing.getColorRGB(110, 140, 170));
+        pallete.put("BUTTON_BACKGROUND_SELECTED_ACTIVE", Drawing.getColorRGB(120, 150, 180));
+        pallete.put("BUTTON_BACKGROUND_STANDARD", Drawing.getColorRGB(110, 110, 110));
+        pallete.put("BUTTON_BACKGROUND_STANDARD_ACTIVE", Drawing.getColorRGB(120, 120, 120));
         pallete.put("BUTTON_BORDER", Drawing.getColorRGB(0, 0, 0));
         pallete.put("BUTTON_TEXT", Drawing.getColorRGB(0, 0, 0));
+        pallete.put("CONTEXT_BACKGROUND", Drawing.getColorRGB(185, 85, 85));
+        pallete.put("CONTEXT_BORDER", Drawing.getColorRGB(0, 0, 0));
+        pallete.put("CONTEXT_SHADOW", Drawing.getColorRGB(165, 80, 80));
+        pallete.put("CONTEXT_TEXT", Drawing.getColorRGB(0, 0, 0));
         pallete.put("SCROLLBAR_BACKGROUND", Drawing.getColorRGB(80, 80, 80));
         pallete.put("SCROLLBAR_BORDER", Drawing.getColorRGB(0, 0, 0));
         pallete.put("TITLEBAR_BACKGROUND", Drawing.getColorRGB(110, 140, 170));
@@ -38,6 +44,7 @@ public class Theme
         this.typeface = new HashMap<String, Font>();
         typeface.put("BUTTON_TEXT", new Font("Courier New", Font.PLAIN, 16));
         typeface.put("BUTTON_TEXT_BOLD", new Font("Courier New", Font.BOLD, 16));
+        typeface.put("CONTEXT_TEXT", new Font("Courier New", Font.PLAIN, 16));
         typeface.put("FRAGMENT_LIST", new Font("Courier New", Font.PLAIN, 12));
         typeface.put("MENUBAR_TEXT", new Font("Courier New", Font.PLAIN, 16));
         typeface.put("STANDARD", new Font("Andalus", Font.PLAIN, 26));

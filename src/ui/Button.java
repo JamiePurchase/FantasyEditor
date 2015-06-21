@@ -14,6 +14,21 @@ public class Button extends Element
     private Color colorBkgStandard, colorBkgActive;
     private Action action;
     
+    public Button(String ref, int posX, int posY, int sizeX, int sizeY, Action action)
+    {
+        this.setRef(ref);
+        this.setText("");
+        this.setTextBold(false);
+        this.setPosX(posX);
+        this.setPosY(posY);
+        this.setSizeX(sizeX);
+        this.setSizeY(sizeY);
+        this.setVisible(true);
+        this.setColorBkgActive(Editor.getThemeColour("BUTTON_BACKGROUND_STANDARD_ACTIVE"));
+        this.setColorBkgStandard(Editor.getThemeColour("BUTTON_BACKGROUND_STANDARD"));
+        this.action = action;
+    }
+    
     public Button(String ref, String text, boolean bold, int posX, int posY, int sizeX, int sizeY)
     {
         this.setRef(ref);
@@ -72,16 +87,26 @@ public class Button extends Element
     
     public void render(Graphics gfx)
     {
-        // Background
+        renderBackground(gfx);
+        renderText(gfx);
+        renderBorder(gfx);
+    }
+    
+    public void renderBackground(Graphics gfx)
+    {
         gfx.setColor(this.getColorBkgStandard());
         if(this.getHover()) {gfx.setColor(this.getColorBkgActive());}
         gfx.fillRect(this.getPosX(), this.getPosY(), this.getSizeX(), this.getSizeY());
-        
-        // Border
+    }
+    
+    public void renderBorder(Graphics gfx)
+    {
         gfx.setColor(Editor.getThemeColour("BUTTON_BORDER"));
         gfx.drawRect(this.getPosX(), this.getPosY(), this.getSizeX(), this.getSizeY());
-        
-        // Text
+    }
+    
+    public void renderText(Graphics gfx)
+    {
         gfx.setColor(Editor.getThemeColour("BUTTON_BORDER"));
         gfx.setFont(this.getTextFont());
         Drawing.write(gfx, "X", this.getPosXCenter(), 20, "CENTER");

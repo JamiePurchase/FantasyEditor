@@ -11,6 +11,8 @@ public abstract class Element
     private boolean visible;
     private ElementNexus nexus;
     private boolean isModal;
+    private String tooltipString = null;
+    private boolean tooltipEnable = false;
     
     public void activate()
     {
@@ -73,6 +75,16 @@ public abstract class Element
         return this.sizeY;
     }
     
+    public boolean getTooltipEnabled()
+    {
+        return this.tooltipEnable;
+    }
+    
+    public String getTooltipString()
+    {
+        return this.tooltipString;
+    }
+    
     public boolean getValidAction()
     {
         if(!this.getVisible()) {return false;}
@@ -106,6 +118,11 @@ public abstract class Element
         this.posY = posY;
     }
     
+    public void setRef(String ref)
+    {
+        this.ref = ref;
+    }
+    
     public void setSizeX(int sizeX)
     {
         this.sizeX = sizeX;
@@ -116,9 +133,16 @@ public abstract class Element
         this.sizeY = sizeY;
     }
     
-    public void setRef(String ref)
+    public void setTooltip()
     {
-        this.ref = ref;
+        this.tooltipString = null;
+        this.tooltipEnable = false;
+    }
+    
+    public void setTooltip(String text)
+    {
+        this.tooltipString = text;
+        this.tooltipEnable = true;
     }
     
     public void setVisible(boolean visible)

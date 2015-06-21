@@ -91,6 +91,21 @@ public abstract class State
         return found;
     }
     
+    public Element mouseNexusCheck(Point point)
+    {
+        for(int e = 0; e < mouseNexus.size(); e++)
+        {
+            if(mouseNexus.get(e).contains(point))
+            {
+                if(mouseNexus.get(e).getElement().getTooltipEnabled())
+                {
+                    return mouseNexus.get(e).getElement();
+                }
+            }
+        }
+        return null;
+    }
+    
     public void mouseNexusClear()
     {
         this.mouseNexus = new ArrayList<ElementNexus>();

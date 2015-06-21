@@ -99,6 +99,7 @@ public class Board
         ArrayList<String> data = new ArrayList<String>();
         data.add("! BOARD FILE - " + this.getRef() + " !");
         data.add(this.titleBoard + "|" + this.titleArea);
+        data.add(this.sizeX + "|" + this.sizeY);
         data.add(Drawing.getColorString(this.background));
         data.add(this.soundtrack.getRef());
         // NOTE: make sure all data gets added here, when boards are developed

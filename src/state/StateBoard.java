@@ -11,8 +11,12 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import ui.Action;
 import ui.ActionBoard;
+import ui.ButtonIcon;
 import ui.Element;
 import ui.FrameModal;
 import ui.Panel;
@@ -27,7 +31,8 @@ public class StateBoard extends State
     private boolean fileUnsaved;
     
     // Interface
-    private Panel uiTools, uiPanel;
+    private Toolbar uiTools;
+    private Panel uiPanel;
     private Picture uiPanelTerrain;
     
     // Board
@@ -47,10 +52,13 @@ public class StateBoard extends State
         this.fileRef = "";
         this.fileUnsaved = false;
         
+        // Debug
+        System.out.println("fileActive: " + this.fileActive);
+        
         // Interface (constant)
         this.setTitle("Board Editor", this.getFileTitle());
         Editor.setInterfaceMenu(this.loadInterface());
-        this.uiTools = new Panel("EDITOR_BOARD_TOOLS", 5, 60, 1356, 50);
+        this.uiTools = loadInterfaceTools();
         this.uiPanel = new Panel("EDITOR_BOARD_PANEL", 1204, 110, 157, 623);
         
         // Interface (partial)
@@ -79,9 +87,7 @@ public class StateBoard extends State
         this.boardArea = new Rectangle(5, 110, 1184, 608);
         
         // Tools
-        this.toolActive = "PAINT_SINGLE";
-        this.toolGroup = "TERRAIN";
-        this.toolPaint = "test|3|1";
+        this.setTool("PAINT_SINGLE", "TERRAIN", "test|3|1");
         
         // Options
         this.optionGridlines = false;
@@ -115,6 +121,24 @@ public class StateBoard extends State
         }
     }
     
+    private void fileOpen(String ref)
+    {
+        Editor.setInterfaceStatus("Loading board...");
+        try
+        {
+            this.boardObject = BoardService.getBoard(ref);
+            this.boardObject.setRender(5, 110, 10, 10);
+            this.fileActive = true;
+            this.fileRef = ref;
+            this.fileUnsaved = true;
+        }
+        catch (IOException ex)
+        {
+            System.out.println(ex);
+            Editor.setInterfaceStatus("Failed to load the board.");
+        }
+    }
+    
     private void fileSave()
     {
         Editor.setInterfaceStatus("Saving board...");
@@ -124,7 +148,7 @@ public class StateBoard extends State
     
     private String getFileTitle()
     {
-        if(this.fileActive = true) {return this.fileRef;}
+        if(this.fileActive == true) {return this.fileRef;}
         return "";
     }
     
@@ -191,14 +215,27 @@ public class StateBoard extends State
         // with the ability to copy and paste the terrain
     }
     
-    public void mouseNexusAdd(Element element)
+    private Toolbar loadInterfaceTools()
     {
-        super.mouseNexusAdd(element);
-    }
-    
-    public void mouseNexusAdd(String ref, Element element)
-    {
-        super.mouseNexusAdd(ref, element);
+        Toolbar toolbar = new Toolbar("EDITOR_BOARD_TOOLS", 5, 60, 1356, 50);
+        toolbar.addButton(new ButtonIcon("EDITOR_BOARD_TOOLS_SELECT", Drawing.getImage("icons/toolSelect.png", "EDITOR"), 15, 65, 40, 40, true, new ActionBoard(this)
+        {
+            @Override
+            public void activate() {this.getBoard().setTool("SELECT", "TERRAIN", "test|3|1");}
+        }));
+        toolbar.addButton(new ButtonIcon("EDITOR_BOARD_TOOLS_PAINT", Drawing.getImage("icons/toolPaint.png", "EDITOR"), 65, 65, 40, 40, false, new ActionBoard(this)
+        {
+            @Override
+            public void activate() {this.getBoard().setTool("PAINT_SINGLE", "TERRAIN", "test|3|1");}
+        }));
+        toolbar.addButton(new ButtonIcon("EDITOR_BOARD_TOOLS_BUCKET", Drawing.getImage("icons/toolBucket.png", "EDITOR"), 115, 65, 40, 40, false, new ActionBoard(this)
+        {
+            @Override
+            public void activate() {this.getBoard().setTool("PAINT_FILL", "TERRAIN", "test|3|1");}
+        }));
+        
+        // NOTE: remember to hook these things up with a nexus
+        return toolbar;
     }
     
     public void mouseMoved(MouseEvent event)
@@ -216,6 +253,16 @@ public class StateBoard extends State
             else {Editor.setInterfaceStatus(this.getToolName(), "", "", "");}
         }
     }
+    
+    public void mouseNexusAdd(Element element)
+    {
+        super.mouseNexusAdd(element);
+    }
+    
+    public void mouseNexusAdd(String ref, Element element)
+    {
+        super.mouseNexusAdd(ref, element);
+    }
 
     public void mousePressed(MouseEvent event)
     {        
@@ -223,7 +270,7 @@ public class StateBoard extends State
         boolean done = this.mouseNexusCheck(event);
         
         // Board Click
-        if(!done && this.boardArea.contains(event.getPoint())) {this.boardClick(event);}
+        if(!done && this.fileActive && this.boardArea.contains(event.getPoint())) {this.boardClick(event);}
     }
 
     public void mouseReleased(MouseEvent event)
@@ -249,7 +296,7 @@ public class StateBoard extends State
     private void renderBoard(Graphics gfx)
     {
         // Board Background
-        gfx.setColor(Color.GREEN);
+        gfx.setColor(Editor.getThemeColour("APP_BACKGROUND"));
         gfx.fillRect(this.boardArea.x, this.boardArea.y, this.boardArea.width, this.boardArea.height);
         
         // Board Terrain
